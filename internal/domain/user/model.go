@@ -1,11 +1,15 @@
 package user
 
+import (
+	"time"
+)
+
 type User struct {
-	id          string
-	firstName   string
-	lastName    string
-	countryCode int
-	regionCode  int
-	createdAt   int
-	updatedAt   int
+	Id          string    `json:"id"`
+	FirstName   string    `json:"firstName"`
+	LastName    string    `json:"lastName"`
+	CountryCode int       `json:"countryCode"`
+	RegionCode  int       `json:"regionCode"`
+	CreatedAt   time.Time `json:"createdAt"`
+	UpdatedAt   time.Time `json:"updatedAt"`
 }

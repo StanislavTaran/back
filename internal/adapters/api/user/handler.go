@@ -7,7 +7,8 @@ import (
 )
 
 const (
-	getByIdPath = "/user/:id"
+	getByIdPath = "/users/:id"
+	createPath  = "/users"
 )
 
 type Handler struct {
@@ -15,12 +16,14 @@ type Handler struct {
 }
 
 func NewUserHandler(storage *mysqlClient.MySQLClient) *Handler {
-	us := user.NewUserService(storage)
+	userStorage := user.NewUserStorage(storage)
+	userService := user.NewUserService(userStorage)
 	return &Handler{
-		userService: us,
+		userService: userService,
 	}
 }
 
 func (h *Handler) Register(e *gin.Engine) {
-	e.GET(getByIdPath, h.GetById())
+	e.POST(createPath, h.CreateUser())
+	e.GET(getByIdPath, h.GetUserById())
 }

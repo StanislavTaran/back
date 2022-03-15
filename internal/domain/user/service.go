@@ -1,17 +1,16 @@
 package user
 
 import (
-	"back/pkg/mysqlClient"
 	"context"
 )
 
 type Service struct {
-	storage *mysqlClient.MySQLClient
+	userStorage *Storage
 }
 
-func NewUserService(mysql *mysqlClient.MySQLClient) *Service {
+func NewUserService(storage *Storage) *Service {
 	return &Service{
-		storage: mysql,
+		userStorage: storage,
 	}
 }
 
@@ -20,29 +19,17 @@ func (us *Service) Find(ctx context.Context, query map[string]interface{}) ([]*U
 }
 
 func (us *Service) FindById(ctx context.Context, id string) (*User, error) {
-	query := "SELECT * FROM users WHERE id = ?"
-	var user User
-
-	row := us.storage.Db.QueryRowContext(ctx, query, id)
-	err := row.Scan(
-		&user.Id,
-		&user.FirstName,
-		&user.LastName,
-		&user.CountryCode,
-		&user.RegionCode,
-		&user.CreatedAt,
-		&user.UpdatedAt,
-	)
+	user, err := us.userStorage.FindById(ctx, id)
 	if err != nil {
 		return nil, err
 	}
 
-	return &user, nil
+	return user, nil
 }
 
-func (us *Service) Create(ctx context.Context, dto CreateUserDTO) (*User, error) {
-	return nil, nil
+func (us *Service) Create(ctx context.Context, dto CreateUserDTO) (id string, err error) {
+	return us.userStorage.Create(ctx, dto)
 }
-func (us *Service) Update(ctx context.Context, dto CreateUserDTO) (*User, error) {
-	return nil, nil
+func (us *Service) Update(ctx context.Context, dto CreateUserDTO) error {
+	return nil
 }

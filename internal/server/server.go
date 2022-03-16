@@ -2,6 +2,7 @@ package server
 
 import (
 	"back/internal/adapters/api/user"
+	"back/pkg/logger"
 	"back/pkg/mysqlClient"
 	"github.com/gin-gonic/gin"
 )
@@ -10,13 +11,13 @@ type Server struct {
 	config  *Config
 	Engine  *gin.Engine
 	storage *mysqlClient.MySQLClient
-	//Logger logger.ILogger
+	Logger  logger.ILogger
 }
 
-func NewServer(config *Config) *Server {
+func NewServer(config *Config, logger logger.ILogger) *Server {
 	return &Server{
 		config: config,
-		//Logger: logger,
+		Logger: logger,
 		Engine: gin.Default(),
 	}
 }
@@ -28,13 +29,14 @@ func (s *Server) Run() (err error) {
 	}
 
 	s.initRoutes()
+	s.Logger.Debug("Routes mounted successfully.")
 
 	err = s.Engine.Run(s.config.BindAddr)
 	if err != nil {
 		return err
 	}
 
-	//s.Logger.Info("Server started successfully")
+	s.Logger.Debug("Server started successfully")
 	return nil
 }
 
@@ -57,6 +59,6 @@ func (s *Server) initRoutes() {
 		})
 	})
 
-	userHandler := user.NewUserHandler(s.storage)
+	userHandler := user.NewUserHandler(s.storage, s.Logger)
 	userHandler.Register(s.Engine)
 }

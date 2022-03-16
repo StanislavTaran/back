@@ -9,6 +9,8 @@ import (
 	"net/http"
 )
 
+const logLocation = "USER CONTROLLER:"
+
 func (h *Handler) getUserById() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		id := ctx.Param("id")
@@ -16,6 +18,7 @@ func (h *Handler) getUserById() gin.HandlerFunc {
 		user, err := h.userService.FindById(ctx, id)
 		if err != nil {
 			httpResponse.ErrorByType(ctx, err)
+			h.logger.Error(logLocation + err.Error())
 			return
 		}
 
@@ -29,24 +32,28 @@ func (h *Handler) createUser() gin.HandlerFunc {
 		body, err := ioutil.ReadAll(ctx.Request.Body)
 		if err != nil {
 			httpResponse.ErrorByType(ctx, err)
+			h.logger.Error(logLocation + err.Error())
 			return
 		}
 
 		err = json.Unmarshal(body, &dto)
 		if err != nil {
 			httpResponse.ErrorByType(ctx, err)
+			h.logger.Error(logLocation + err.Error())
 			return
 		}
 
 		err = dto.Validate()
 		if err != nil {
 			httpResponse.ErrorByType(ctx, err)
+			h.logger.Error(logLocation + err.Error())
 			return
 		}
 
 		id, err := h.userService.Create(ctx, dto)
 		if err != nil {
 			httpResponse.ErrorByType(ctx, err)
+			h.logger.Error(logLocation + err.Error())
 			return
 		}
 
@@ -61,6 +68,7 @@ func (h *Handler) activateUser() gin.HandlerFunc {
 		err := h.userService.ActivateUser(ctx, id)
 		if err != nil {
 			httpResponse.ErrorByType(ctx, err)
+			h.logger.Error(logLocation + err.Error())
 			return
 		}
 
@@ -75,25 +83,29 @@ func (h *Handler) signIn() gin.HandlerFunc {
 		body, err := ioutil.ReadAll(ctx.Request.Body)
 		if err != nil {
 			httpResponse.ErrorByType(ctx, err)
+			h.logger.Error(logLocation + err.Error())
 			return
 		}
 
 		err = json.Unmarshal(body, &creds)
 		if err != nil {
 			httpResponse.ErrorByType(ctx, err)
+			h.logger.Error(logLocation + err.Error())
 			return
 		}
 
 		token, expTime, err := h.userService.SignIn(ctx, creds)
 		if err != nil {
 			httpResponse.ErrorByType(ctx, err)
+			h.logger.Error(logLocation + err.Error())
 			return
 		}
 
 		http.SetCookie(ctx.Writer, &http.Cookie{
-			Name:    "token",
-			Value:   token,
-			Expires: expTime,
+			Name:     "token",
+			Value:    token,
+			Expires:  expTime,
+			HttpOnly: true,
 		})
 	}
 }

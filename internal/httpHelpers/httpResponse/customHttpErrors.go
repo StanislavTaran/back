@@ -18,8 +18,15 @@ func ErrorByType(c *gin.Context, err error) {
 		message = "Operation failed. Please try later."
 		code = http.StatusInternalServerError
 	default:
-		message = "Something went wrong. Please try later."
-		code = http.StatusInternalServerError
+		switch err.Error() {
+		case "crypto/bcrypt: hashedPassword is not the hash of the given password":
+			message = "Incorrect email or password."
+			code = http.StatusBadRequest
+		default:
+			message = "Something went wrong. Please try later."
+			code = http.StatusBadRequest
+		}
+
 	}
 
 	c.JSON(code, gin.H{

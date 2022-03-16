@@ -2,6 +2,7 @@ package main
 
 import (
 	"back/internal/server"
+	"back/pkg/logger"
 	"fmt"
 	_ "github.com/go-sql-driver/mysql"
 	"log"
@@ -15,12 +16,12 @@ func main() {
 		log.Fatal(fmt.Sprintf("Config read failed...%s", err.Error()))
 	}
 
-	//logger := logger.New(serverCfg.Server.LogLevel)
+	logger := logger.New(serverCfg.LogLevel)
 
-	s := server.NewServer(serverCfg)
+	s := server.NewServer(serverCfg, logger)
 
 	err := s.Run()
 	if err != nil {
-		log.Fatal(fmt.Sprintf("Server start failed... %s", err.Error()))
+		logger.Fatal(fmt.Sprintf("Server start failed... %s", err.Error()))
 	}
 }

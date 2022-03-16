@@ -3,6 +3,8 @@ CREATE TABLE `users` (
                          `firstName` varchar(255),
                          `lastName` varchar(255),
                          `email` varchar(255) UNIQUE,
+                         `password` varchar(255),
+                         `isActive` TINYINT DEFAULT 0,
                          `createdAt` timestamp DEFAULT CURRENT_TIMESTAMP,
                          `updatedAt` timestamp DEFAULT CURRENT_TIMESTAMP
 );

@@ -1,8 +1,8 @@
 package mysqlClient
 
 import (
-	"database/sql"
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/jmoiron/sqlx"
 )
 
 // Config provides options to establish connection to MySQL db
@@ -14,20 +14,20 @@ type Config struct {
 
 // MySQLClient a way to work with MySQL database
 type MySQLClient struct {
-	config *Config
-	db     *sql.DB
+	Config *Config
+	Db     *sqlx.DB
 }
 
-// New - initialize new MySQL struct with config
-func New(config *Config) *MySQLClient {
+// NewMySQLClient - initialize new MySQL struct with config
+func NewMySQLClient(config *Config) *MySQLClient {
 	return &MySQLClient{
-		config: config,
+		Config: config,
 	}
 }
 
 // Open new MySQL connection using passed to New func config
 func (m *MySQLClient) Open() error {
-	db, err := sql.Open("mysql", m.config.ConnectionURL)
+	db, err := sqlx.Connect("mysql", m.Config.ConnectionURL)
 	if err != nil {
 		return err
 	}
@@ -36,12 +36,12 @@ func (m *MySQLClient) Open() error {
 		return err
 	}
 
-	m.db = db
+	m.Db = db
 
 	return nil
 }
 
 // Close current MySQL connection
 func (m *MySQLClient) Close() error {
-	return m.db.Close()
+	return m.Db.Close()
 }

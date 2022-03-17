@@ -1,11 +1,16 @@
 package user
 
+import (
+	"time"
+)
+
 type User struct {
-	id          string
-	firstName   string
-	lastName    string
-	countryCode int
-	regionCode  int
-	createdAt   int
-	updatedAt   int
+	Id        string    `json:"id"`
+	FirstName string    `json:"firstName"`
+	LastName  string    `json:"lastName"`
+	Email     string    `json:"email"`
+	Password  string    `json:"password"`
+	IsActive  uint8     `json:"isActive"`
+	CreatedAt time.Time `json:"createdAt"`
+	UpdatedAt time.Time `json:"updatedAt"`
 }

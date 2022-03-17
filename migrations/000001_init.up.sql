@@ -2,25 +2,26 @@ CREATE TABLE `users` (
                          `id` varchar(255) PRIMARY KEY UNIQUE,
                          `firstName` varchar(255),
                          `lastName` varchar(255),
-                         `countryCode` int,
-                         `regionCode` int,
-                         `createdAt` timestamp,
-                         `updatedAt` timestamp
+                         `email` varchar(255) UNIQUE,
+                         `password` varchar(255),
+                         `isActive` TINYINT DEFAULT 0,
+                         `createdAt` timestamp DEFAULT CURRENT_TIMESTAMP,
+                         `updatedAt` timestamp DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE `countries` (
                              `code` int PRIMARY KEY UNIQUE,
-                             `shortName` varchar(255),
-                             `fullName` varchar(255)
+                             `shortName` varchar(255) UNIQUE,
+                             `fullName` varchar(255) UNIQUE
 );
 
 CREATE TABLE `regions` (
                            `code` int PRIMARY KEY UNIQUE,
                            `countryCode` int,
-                           `shortName` varchar(255),
-                           `fullName` varchar(255)
+                           `shortName` varchar(255) UNIQUE,
+                           `fullName` varchar(255) UNIQUE
 );
 
-ALTER TABLE `users` ADD FOREIGN KEY (`countryCode`) REFERENCES `countries` (`code`);
-
-ALTER TABLE `regions` ADD FOREIGN KEY (`countryCode`) REFERENCES `countries` (`code`);
+INSERT INTO `countries` (code, shortName, fullName) VALUES (1, "UA", "Ukraine");
+INSERT INTO `regions` (code, countryCode, shortName, fullName) VALUES (1,1,"KH", "Kharkiv");
+INSERT INTO `users` (id, firstName, lastName, email) VALUES ("test","test","test","test@test.com");

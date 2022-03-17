@@ -8,8 +8,6 @@ import (
 )
 
 const (
-	signInPath = "/auth/signIn"
-
 	getByIdPath  = "/users/:id"
 	createPath   = "/users"
 	activatePath = "/users/:id/activate"
@@ -30,8 +28,6 @@ func NewUserHandler(storage *mysqlClient.MySQLClient, logger logger.ILogger) *Ha
 }
 
 func (h *Handler) Register(e *gin.Engine) {
-	e.POST(signInPath, h.signIn())
-
 	e.POST(createPath, h.createUser())
 	e.GET(getByIdPath, h.getUserById())
 	e.POST(activatePath, h.activateUser())

@@ -1,7 +1,9 @@
 package server
 
 import (
+	"back/internal/adapters/api/auth"
 	"back/internal/adapters/api/user"
+	"back/internal/adapters/middlewares"
 	"back/pkg/logger"
 	"back/pkg/mysqlClient"
 	"github.com/gin-gonic/gin"
@@ -53,7 +55,9 @@ func (s *Server) configureMySQLStorage() error {
 }
 
 func (s *Server) initRoutes() {
-	s.Engine.GET("/ping", func(c *gin.Context) {
+	private := s.Engine.Group("/private")
+	private.Use(middlewares.AuthMiddleware)
+	private.GET("/ping", func(c *gin.Context) {
 		c.JSON(200, gin.H{
 			"message": "pong",
 		})
@@ -61,4 +65,7 @@ func (s *Server) initRoutes() {
 
 	userHandler := user.NewUserHandler(s.storage, s.Logger)
 	userHandler.Register(s.Engine)
+
+	authHandler := auth.NewAuthHandler(s.storage, s.Logger)
+	authHandler.Register(s.Engine)
 }

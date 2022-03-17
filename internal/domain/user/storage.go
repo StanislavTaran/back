@@ -42,17 +42,23 @@ func (s *Storage) FindById(ctx context.Context, id string) (*User, error) {
 	return &user, nil
 }
 
-func (s *Storage) GetUserPassword(ctx context.Context, email string) (string, error) {
-	query := "SELECT password FROM users WHERE email = ?"
-	var password string
+func (s *Storage) GetUserByEmail(ctx context.Context, email string) (*User, error) {
+	query := "SELECT firstName, lastName, email, password, isActive FROM users WHERE email = ?"
+	var user User
 
 	row := s.client.Db.QueryRowContext(ctx, query, email)
-	err := row.Scan(&password)
+	err := row.Scan(
+		&user.FirstName,
+		&user.LastName,
+		&user.Email,
+		&user.Password,
+		&user.IsActive,
+	)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
-	return password, nil
+	return &user, nil
 }
 
 func (s *Storage) Create(ctx context.Context, dto CreateUserDTO) (string, error) {

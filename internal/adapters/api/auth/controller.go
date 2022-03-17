@@ -1,33 +1,20 @@
-package user
+package auth
 
 import (
-	userDTO "back/internal/domain/user"
+	authDTO "back/internal/domain/auth"
 	"back/internal/httpHelpers/httpResponse"
+	jwtpackage "back/pkg/jwt"
 	"encoding/json"
 	"github.com/gin-gonic/gin"
 	"io/ioutil"
 )
 
-const logLocation = "USER CONTROLLER:"
+const logLocation = "AUTH CONTROLLER:"
 
-func (h *Handler) getUserById() gin.HandlerFunc {
+func (h *Handler) signIn() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		id := ctx.Param("id")
+		var creds authDTO.Credentials
 
-		user, err := h.userService.FindById(ctx, id)
-		if err != nil {
-			httpResponse.ErrorByType(ctx, err)
-			h.logger.Error(logLocation + err.Error())
-			return
-		}
-
-		httpResponse.SuccessData(ctx, user)
-	}
-}
-
-func (h *Handler) createUser() gin.HandlerFunc {
-	return func(ctx *gin.Context) {
-		var dto userDTO.CreateUserDTO
 		body, err := ioutil.ReadAll(ctx.Request.Body)
 		if err != nil {
 			httpResponse.ErrorByType(ctx, err)
@@ -35,42 +22,56 @@ func (h *Handler) createUser() gin.HandlerFunc {
 			return
 		}
 
-		err = json.Unmarshal(body, &dto)
+		err = json.Unmarshal(body, &creds)
 		if err != nil {
 			httpResponse.ErrorByType(ctx, err)
 			h.logger.Error(logLocation + err.Error())
 			return
 		}
 
-		err = dto.Validate()
+		user, err := h.authService.FindUserByEmail(ctx, creds.Email)
 		if err != nil {
 			httpResponse.ErrorByType(ctx, err)
 			h.logger.Error(logLocation + err.Error())
 			return
 		}
 
-		id, err := h.userService.Create(ctx, dto)
+		token, err := h.authService.SignIn(ctx, *user, creds)
 		if err != nil {
 			httpResponse.ErrorByType(ctx, err)
 			h.logger.Error(logLocation + err.Error())
 			return
 		}
 
-		httpResponse.SuccessData(ctx, map[string]string{"id": id})
+		httpResponse.SuccessData(ctx, &token)
 	}
 }
 
-func (h *Handler) activateUser() gin.HandlerFunc {
+func (h *Handler) refreshToken() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		id := ctx.Param("id")
+		var rt jwtpackage.RT
 
-		err := h.userService.ActivateUser(ctx, id)
+		body, err := ioutil.ReadAll(ctx.Request.Body)
 		if err != nil {
 			httpResponse.ErrorByType(ctx, err)
 			h.logger.Error(logLocation + err.Error())
 			return
 		}
 
-		httpResponse.SuccessOK(ctx)
+		err = json.Unmarshal(body, &rt)
+		if err != nil {
+			httpResponse.ErrorByType(ctx, err)
+			h.logger.Error(logLocation + err.Error())
+			return
+		}
+
+		token, err := h.authService.RefreshToken(ctx, rt)
+		if err != nil {
+			httpResponse.ErrorByType(ctx, err)
+			h.logger.Error(logLocation + err.Error())
+			return
+		}
+
+		httpResponse.SuccessData(ctx, &token)
 	}
 }

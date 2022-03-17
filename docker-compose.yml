@@ -1,16 +1,16 @@
 
 version: "3"
 services:
-  back:
-    container_name: back
-    build:
-      context: .
-      dockerfile: Dockerfile
-    ports:
-      - "3031:3031"
-    restart: always
-    depends_on:
-      - mysql
+#  back:
+#    container_name: back
+#    build:
+#      context: .
+#      dockerfile: Dockerfile
+#    ports:
+#      - "3031:3031"
+#    restart: always
+#    depends_on:
+#      - mysql
   mysql:
     image: mysql
     container_name: mysql

@@ -50,3 +50,12 @@ func (as *Service) RefreshToken(ctx context.Context, rt jwtpackage.RT) (tokenInf
 
 	return tokenInfo, nil
 }
+
+func (as *Service) LogOut(ctx context.Context, rt jwtpackage.RT) (err error) {
+	err = as.jwtHelper.RemoveRefreshTokenFromCache(rt)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

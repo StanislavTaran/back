@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"github.com/gin-gonic/gin"
 	"io/ioutil"
+	"net/http"
 )
 
 const logLocation = "AUTH CONTROLLER:"
@@ -73,5 +74,34 @@ func (h *Handler) refreshToken() gin.HandlerFunc {
 		}
 
 		httpResponse.SuccessData(ctx, &token)
+	}
+}
+
+func (h *Handler) logOut() gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		var rt jwtpackage.RT
+
+		body, err := ioutil.ReadAll(ctx.Request.Body)
+		if err != nil {
+			httpResponse.ErrorByType(ctx, err)
+			h.logger.Error(logLocation + err.Error())
+			return
+		}
+
+		err = json.Unmarshal(body, &rt)
+		if err != nil {
+			httpResponse.ErrorByType(ctx, err)
+			h.logger.Error(logLocation + err.Error())
+			return
+		}
+
+		err = h.authService.LogOut(ctx, rt)
+		if err != nil {
+			httpResponse.ErrorByType(ctx, err)
+			h.logger.Error(logLocation + err.Error())
+			return
+		}
+
+		ctx.Status(http.StatusOK)
 	}
 }

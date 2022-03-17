@@ -1,6 +1,7 @@
 package auth
 
 import (
+	"back/internal/adapters/middlewares"
 	"back/internal/domain/auth"
 	"back/internal/domain/user"
 	freecachepackage "back/pkg/cache/freecache"
@@ -13,6 +14,7 @@ import (
 const (
 	signInPath       = "/auth/signIn"
 	refreshTokenPath = "/auth/refresh"
+	logOutPath       = "/auth/logout"
 )
 
 type Handler struct {
@@ -35,5 +37,6 @@ func NewAuthHandler(storage *mysqlClient.MySQLClient, logger logger.ILogger) *Ha
 
 func (h *Handler) Register(e *gin.Engine) {
 	e.POST(signInPath, h.signIn())
-	e.POST(refreshTokenPath, h.refreshToken())
+	e.POST(refreshTokenPath, h.refreshToken()).Use(middlewares.AuthMiddleware)
+	e.POST(logOutPath, h.logOut()).Use(middlewares.AuthMiddleware)
 }

@@ -5,6 +5,7 @@ import (
 	cachepackage "back/pkg/cache"
 	"back/pkg/logger"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/google/uuid"
@@ -47,6 +48,7 @@ func NewHelper(RTCache cachepackage.Repository, logger logger.ILogger) Helper {
 type Helper interface {
 	GenerateAccessToken(u user.User) (*TokenInfo, error)
 	UpdateRefreshToken(rt RT) (*TokenInfo, error)
+	RemoveRefreshTokenFromCache(rt RT) error
 }
 
 func (h *helper) UpdateRefreshToken(rt RT) (*TokenInfo, error) {
@@ -97,4 +99,12 @@ func (h *helper) GenerateAccessToken(user user.User) (*TokenInfo, error) {
 	}
 
 	return &tokenInfo, nil
+}
+
+func (h *helper) RemoveRefreshTokenFromCache(rt RT) error {
+	if ok := h.RTCache.Del([]byte(rt.RefreshToken)); !ok {
+		return errors.New("error when remove refresh token")
+	}
+
+	return nil
 }

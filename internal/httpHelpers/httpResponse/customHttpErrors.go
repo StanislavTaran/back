@@ -11,7 +11,7 @@ const (
 
 	REQ_ERR_USER_NOT_FOUND = "User not found"
 
-	VALIDATION_ERR = "User not found"
+	VALIDATION_ERR = "Validation error"
 )
 
 func ErrorByType(c *gin.Context, err error) {

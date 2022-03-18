@@ -48,3 +48,10 @@ func RequestErr(c *gin.Context, err error) {
 		"reason":  err.Error(),
 	})
 }
+
+func RequestErrCustomMessage(c *gin.Context, err error, message string) {
+	c.JSON(400, gin.H{
+		"message": message,
+		"reason":  err.Error(),
+	})
+}

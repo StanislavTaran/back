@@ -44,7 +44,7 @@ func (h *Handler) createUser() gin.HandlerFunc {
 
 		err = dto.Validate()
 		if err != nil {
-			httpResponse.ErrorByType(ctx, err)
+			httpResponse.RequestErrCustomMessage(ctx, err, "Validation error")
 			h.logger.Error(logLocation + err.Error())
 			return
 		}

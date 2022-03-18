@@ -32,7 +32,7 @@ func (h *Handler) signIn() gin.HandlerFunc {
 
 		user, err := h.authService.FindUserByEmail(ctx, creds.Email)
 		if err != nil {
-			httpResponse.RequestErrCustomMessage(ctx, err, "User not found")
+			httpResponse.RequestErrCustomMessage(ctx, err, httpResponse.REQ_ERR_USER_NOT_FOUND)
 			h.logger.Error(logLocation + err.Error())
 			return
 		}

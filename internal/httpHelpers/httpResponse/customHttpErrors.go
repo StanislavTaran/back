@@ -6,6 +6,14 @@ import (
 	"net/http"
 )
 
+const (
+	APP_ERR = "Internal server error"
+
+	REQ_ERR_USER_NOT_FOUND = "User not found"
+
+	VALIDATION_ERR = "User not found"
+)
+
 func ErrorByType(c *gin.Context, err error) {
 	var message string
 	var code int

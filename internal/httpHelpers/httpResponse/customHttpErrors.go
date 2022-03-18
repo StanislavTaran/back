@@ -6,6 +6,15 @@ import (
 	"net/http"
 )
 
+const (
+	APP_ERR = "Something went wrong. Please try later."
+
+	REQ_ERR                = "Request error"
+	REQ_ERR_USER_NOT_FOUND = "User not found"
+
+	VALIDATION_ERR = "Validation error"
+)
+
 func ErrorByType(c *gin.Context, err error) {
 	var message string
 	var code int
@@ -15,7 +24,7 @@ func ErrorByType(c *gin.Context, err error) {
 		message = "No results found."
 		code = http.StatusBadRequest
 	case sql.ErrTxDone:
-		message = "Operation failed. Please try later."
+		message = APP_ERR
 		code = http.StatusInternalServerError
 	default:
 		switch err.Error() {
@@ -23,7 +32,7 @@ func ErrorByType(c *gin.Context, err error) {
 			message = "Incorrect email or password."
 			code = http.StatusBadRequest
 		default:
-			message = "Something went wrong. Please try later."
+			message = APP_ERR
 			code = http.StatusBadRequest
 		}
 
@@ -37,14 +46,21 @@ func ErrorByType(c *gin.Context, err error) {
 
 func InternalErr(c *gin.Context, err error) {
 	c.JSON(500, gin.H{
-		"message": "Internal server error.",
+		"message": APP_ERR,
 		"reason":  err.Error(),
 	})
 }
 
 func RequestErr(c *gin.Context, err error) {
 	c.JSON(400, gin.H{
-		"message": "Request error.",
+		"message": REQ_ERR,
+		"reason":  err.Error(),
+	})
+}
+
+func RequestErrCustomMessage(c *gin.Context, err error, message string) {
+	c.JSON(400, gin.H{
+		"message": message,
 		"reason":  err.Error(),
 	})
 }

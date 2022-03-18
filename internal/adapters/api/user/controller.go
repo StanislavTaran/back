@@ -16,7 +16,7 @@ func (h *Handler) getUserById() gin.HandlerFunc {
 
 		user, err := h.userService.FindById(ctx, id)
 		if err != nil {
-			httpResponse.ErrorByType(ctx, err)
+			httpResponse.RequestErrCustomMessage(ctx, err, httpResponse.REQ_ERR_USER_NOT_FOUND)
 			h.logger.Error(logLocation + err.Error())
 			return
 		}
@@ -44,7 +44,7 @@ func (h *Handler) createUser() gin.HandlerFunc {
 
 		err = dto.Validate()
 		if err != nil {
-			httpResponse.ErrorByType(ctx, err)
+			httpResponse.RequestErrCustomMessage(ctx, err, httpResponse.VALIDATION_ERR)
 			h.logger.Error(logLocation + err.Error())
 			return
 		}

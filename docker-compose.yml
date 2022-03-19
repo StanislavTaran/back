@@ -1,16 +1,16 @@
 
 version: "3"
 services:
-#  back:
-#    container_name: back
-#    build:
-#      context: .
-#      dockerfile: Dockerfile
-#    ports:
-#      - "3031:3031"
-#    restart: always
-#    depends_on:
-#      - mysql
+  back:
+    container_name: back
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3031:3031"
+    restart: always
+    depends_on:
+      - mysql
   mysql:
     image: mysql
     container_name: mysql
@@ -24,3 +24,13 @@ services:
       - "3306:3306"
     volumes:
       - ./backups/backup.sql:/docker-entrypoint-initdb.d/dump.sql
+  migrate:
+    image: migrate/migrate
+    volumes:
+      - ./migrations:/migrations
+    command: ["-path", "/migrations", "-database",  "mysql://root:test@tcp(mysql:3306)/legendary_waffle?charset=utf8mb4&parseTime=True&loc=Local" , "up"]
+    links:
+      - mysql
+    depends_on:
+      - mysql
+    restart: always

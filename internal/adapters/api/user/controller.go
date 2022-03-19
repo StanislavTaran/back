@@ -25,6 +25,21 @@ func (h *Handler) getUserById() gin.HandlerFunc {
 	}
 }
 
+func (h *Handler) getUserFullInfoById() gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		id := ctx.Param("id")
+
+		user, err := h.userService.GetFullUserInfoById(ctx, id)
+		if err != nil {
+			httpResponse.RequestErrCustomMessage(ctx, err, httpResponse.REQ_ERR_USER_NOT_FOUND)
+			h.logger.Error(logLocation + err.Error())
+			return
+		}
+
+		httpResponse.SuccessData(ctx, user)
+	}
+}
+
 func (h *Handler) createUser() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		var dto userDTO.CreateUserDTO

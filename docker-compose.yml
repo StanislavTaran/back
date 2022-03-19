@@ -16,9 +16,11 @@ services:
     container_name: mysql
     command: --default-authentication-plugin=mysql_native_password
     restart: always
+    cap_add:
+      - SYS_NICE
     environment:
       MYSQL_ROOT_PASSWORD: test
     ports:
       - "3306:3306"
     volumes:
-      - ./initdump.sql:/docker-entrypoint-initdb.d/dump.sql
+      - ./backups/backup.sql:/docker-entrypoint-initdb.d/dump.sql

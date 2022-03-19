@@ -27,6 +27,15 @@ func (us *Service) FindById(ctx context.Context, id string) (*User, error) {
 	return user, nil
 }
 
+func (us *Service) GetFullUserInfoById(ctx context.Context, id string) (*FullUserInfoDTO, error) {
+	user, err := us.userStorage.CollectUserInfoById(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+
+	return user, nil
+}
+
 func (us *Service) Create(ctx context.Context, dto CreateUserDTO) (id string, err error) {
 	return us.userStorage.Create(ctx, dto)
 }

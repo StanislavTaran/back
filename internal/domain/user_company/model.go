@@ -1,0 +1,15 @@
+package user_company
+
+import "time"
+
+type UserCompany struct {
+	Id               int       `json:"id"`
+	UserId           string    `json:"userId"`
+	CompanyId        int       `json:"companyId"`
+	EmploymentTypeId int       `json:"employmentTypeId"`
+	CompanyName      string    `json:"companyName"`
+	JobTitle         string    `json:"jobTitle"`
+	InProgress       int       `json:"inProgress"`
+	StartDate        time.Time `json:"startDate"`
+	EndDate          time.Time `json:"endDate"`
+}

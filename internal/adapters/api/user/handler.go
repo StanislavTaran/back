@@ -8,9 +8,10 @@ import (
 )
 
 const (
-	getByIdPath  = "/users/:id"
-	createPath   = "/users"
-	activatePath = "/users/:id/activate"
+	getByIdPath         = "/users/:id"
+	getFullInfoByIdPath = "/users/:id/profile"
+	createPath          = "/users"
+	activatePath        = "/users/:id/activate"
 )
 
 type Handler struct {
@@ -29,6 +30,8 @@ func NewUserHandler(storage *mysqlClient.MySQLClient, logger logger.ILogger) *Ha
 
 func (h *Handler) Register(e *gin.Engine) {
 	e.POST(createPath, h.createUser())
-	e.GET(getByIdPath, h.getUserById())
 	e.POST(activatePath, h.activateUser())
+
+	e.GET(getByIdPath, h.getUserById())
+	e.GET(getFullInfoByIdPath, h.getUserFullInfoById())
 }

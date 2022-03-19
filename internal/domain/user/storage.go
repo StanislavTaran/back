@@ -22,7 +22,7 @@ func NewUserStorage(mysql *mysqlClient.MySQLClient) *Storage {
 }
 
 func (s *Storage) FindById(ctx context.Context, id string) (*User, error) {
-	query := "SELECT id, firstName, lastName, email,isActive, createdAt, updatedAt FROM users WHERE id = ?"
+	query := "SELECT id, firstName, lastName, email, createdAt, updatedAt FROM users WHERE id = ?"
 	var user User
 
 	row := s.client.Db.QueryRowContext(ctx, query, id)
@@ -31,7 +31,6 @@ func (s *Storage) FindById(ctx context.Context, id string) (*User, error) {
 		&user.FirstName,
 		&user.LastName,
 		&user.Email,
-		&user.IsActive,
 		&user.CreatedAt,
 		&user.UpdatedAt,
 	)
@@ -42,8 +41,60 @@ func (s *Storage) FindById(ctx context.Context, id string) (*User, error) {
 	return &user, nil
 }
 
+func (s *Storage) CollectUserInfoById(ctx context.Context, id string) (*FullUserInfoDTO, error) {
+	query := "SELECT u.id, u.firstName, u.lastName, u.dataOfBirth, u.email, u.shortInfo, r.role, u.createdAt, u.updatedAt, ue.id, ue.eduInstitutionId, ue.eduInstitutionName, ue.faculty, ue.inProgress, ue.startDate, ue.endDate, uc.id, uc.companyId, empt.type, uc.companyName, uc.jobTitle, uc.inProgress, uc.startDate, uc.endDate FROM users u INNER JOIN user_company uc ON (u.id = uc.userId) INNER JOIN user_education ue ON (u.id = ue.userId) INNER JOIN role r ON (u.roleId = r.id) INNER JOIN employment_type empt ON (uc.employmentTypeId = empt.id) WHERE u.id = ?"
+	var user FullUserInfoDTO
+
+	rows, err := s.client.Db.QueryContext(ctx, query, id)
+	if err != nil {
+		return nil, err
+	}
+
+	for rows.Next() {
+		var userJob JobUserInfo
+		var userEdu EducationUserInfo
+
+		err = rows.Scan(
+			&user.Id,
+			&user.FirstName,
+			&user.LastName,
+			&user.DateOfBirth,
+			&user.Email,
+			&user.ShortInfo,
+			&user.Role,
+			&user.CreatedAt,
+			&user.UpdatedAt,
+
+			&userEdu.Id,
+			&userEdu.EduInstitutionId,
+			&userEdu.EduInstitutionName,
+			&userEdu.Faculty,
+			&userEdu.InProgress,
+			&userEdu.StartDate,
+			&userEdu.EndDate,
+
+			&userJob.Id,
+			&userJob.CompanyId,
+			&userJob.EmploymentType,
+			&userJob.CompanyName,
+			&userJob.JobTitle,
+			&userJob.InProgress,
+			&userJob.StartDate,
+			&userJob.EndDate,
+		)
+		if err != nil {
+			return nil, err
+		}
+
+		user.Education = append(user.Education, userEdu)
+		user.JobExperience = append(user.JobExperience, userJob)
+	}
+
+	return &user, nil
+}
+
 func (s *Storage) GetUserByEmail(ctx context.Context, email string) (*User, error) {
-	query := "SELECT firstName, lastName, email, password, isActive FROM users WHERE email = ?"
+	query := "SELECT firstName, lastName, email, password FROM users WHERE email = ?"
 	var user User
 
 	row := s.client.Db.QueryRowContext(ctx, query, email)
@@ -52,7 +103,6 @@ func (s *Storage) GetUserByEmail(ctx context.Context, email string) (*User, erro
 		&user.LastName,
 		&user.Email,
 		&user.Password,
-		&user.IsActive,
 	)
 	if err != nil {
 		return nil, err

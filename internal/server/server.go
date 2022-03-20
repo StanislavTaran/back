@@ -55,6 +55,7 @@ func (s *Server) configureMySQLStorage() error {
 }
 
 func (s *Server) initRoutes() {
+	s.Engine.Use(middlewares.CORSMiddleware())
 	private := s.Engine.Group("/private")
 	private.Use(middlewares.AuthMiddleware)
 	private.GET("/ping", func(c *gin.Context) {

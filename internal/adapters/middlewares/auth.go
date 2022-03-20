@@ -30,8 +30,6 @@ func AuthMiddleware(ctx *gin.Context) {
 			ctx.AbortWithStatus(http.StatusUnauthorized)
 			return
 		}
-		ctx.AbortWithStatus(http.StatusBadRequest)
-		return
 	}
 	if !tkn.Valid {
 		ctx.AbortWithStatus(http.StatusUnauthorized)

@@ -8,7 +8,6 @@ import (
 	"errors"
 	"fmt"
 	"github.com/dgrijalva/jwt-go"
-	"github.com/google/uuid"
 	"time"
 )
 
@@ -17,14 +16,21 @@ const (
 	//AUDIENCE_ADMINS = "admins"
 )
 
+// TODO retrieve from ENV
+const (
+	DESTINATION_TOKEN         = "goodzone"
+	DESTINATION_REFRESH_TOKEN = "merefa"
+)
+
 const (
 	TOKEN_EXP_TIME = 60
-	JWT_SECRET     = "jkahdlias9gdliuygasodaso7"
+	JWT_SECRET     = "jkahdlias9gdliuygasodaso7" // TODO retrieve from ENV
 )
 
 type UserClaims struct {
 	jwt.StandardClaims
-	Email string `json:"email"`
+	Email       string `json:"email"`
+	Destination string `json:"destination"`
 }
 
 type TokenInfo struct {
@@ -69,7 +75,8 @@ func (h *helper) UpdateRefreshToken(rt RT) (*TokenInfo, error) {
 func (h *helper) GenerateAccessToken(user user.User) (*TokenInfo, error) {
 	expirationTime := time.Now().Add(TOKEN_EXP_TIME * time.Minute)
 	claims := &UserClaims{
-		Email: user.Email,
+		Email:       user.Email,
+		Destination: DESTINATION_TOKEN,
 		StandardClaims: jwt.StandardClaims{
 			Id:        user.Id,
 			ExpiresAt: expirationTime.Unix(),
@@ -83,9 +90,22 @@ func (h *helper) GenerateAccessToken(user user.User) (*TokenInfo, error) {
 	}
 
 	h.Logger.Info("create refresh token")
-	refreshTokenUuid := uuid.New()
+	refreshToken := jwt.NewWithClaims(jwt.SigningMethodHS256, &UserClaims{
+		Email:       user.Email,
+		Destination: DESTINATION_REFRESH_TOKEN,
+		StandardClaims: jwt.StandardClaims{
+			Id:        user.Id,
+			ExpiresAt: expirationTime.Unix(),
+			Audience:  AUDIENCE_USERS,
+		},
+	})
+	refreshTokenString, err := refreshToken.SignedString([]byte(JWT_SECRET))
+	if err != nil {
+		return nil, err
+	}
+
 	userBytes, _ := json.Marshal(user)
-	err = h.RTCache.Set([]byte(refreshTokenUuid.String()), userBytes, 60*60*12)
+	err = h.RTCache.Set([]byte(refreshTokenString), userBytes, 60*60*12)
 	if err != nil {
 		h.Logger.Error(err.Error())
 
@@ -95,7 +115,7 @@ func (h *helper) GenerateAccessToken(user user.User) (*TokenInfo, error) {
 
 	tokenInfo := TokenInfo{
 		Token:        tokenString,
-		RefreshToken: refreshTokenUuid.String(),
+		RefreshToken: refreshTokenString,
 	}
 
 	return &tokenInfo, nil

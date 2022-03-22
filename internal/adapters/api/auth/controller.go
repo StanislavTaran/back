@@ -5,6 +5,7 @@ import (
 	"back/internal/httpHelpers/httpResponse"
 	jwtpackage "back/pkg/jwt"
 	"encoding/json"
+	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 	"io/ioutil"
 	"net/http"
@@ -63,6 +64,27 @@ func (h *Handler) refreshToken() gin.HandlerFunc {
 		if err != nil {
 			httpResponse.ErrorByType(ctx, err)
 			h.logger.Error(logLocation + err.Error())
+			return
+		}
+
+		claims := &jwtpackage.UserClaims{}
+
+		tkn, err := jwt.ParseWithClaims(rt.RefreshToken, claims, func(token *jwt.Token) (interface{}, error) {
+			return []byte(jwtpackage.JWT_SECRET), nil
+		})
+		if err != nil {
+			if err == jwt.ErrSignatureInvalid {
+				ctx.AbortWithStatus(http.StatusUnauthorized)
+				return
+			}
+		}
+		if !tkn.Valid {
+			ctx.AbortWithStatus(http.StatusUnauthorized)
+			return
+		}
+
+		if claims.Destination != jwtpackage.DESTINATION_REFRESH_TOKEN {
+			ctx.AbortWithStatus(http.StatusUnauthorized)
 			return
 		}
 

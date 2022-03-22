@@ -36,6 +36,11 @@ func AuthMiddleware(ctx *gin.Context) {
 		return
 	}
 
+	if claims.Destination != jwtpackage.DESTINATION_TOKEN {
+		ctx.AbortWithStatus(http.StatusUnauthorized)
+		return
+	}
+
 	ctx.Set("userId", claims.Id)
 	ctx.Next()
 }

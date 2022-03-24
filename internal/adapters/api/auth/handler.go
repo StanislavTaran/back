@@ -36,7 +36,15 @@ func NewAuthHandler(storage *mysqlClient.MySQLClient, logger logger.ILogger) *Ha
 }
 
 func (h *Handler) Register(e *gin.Engine) {
+	// @Summary Sign In
+	// @Tags Auth
+	// @Success 200 {object} jwtpackage.Token
+	// @Failure 404 {object} object
+	// @Router /auth/signIn [post]
 	e.POST(signInPath, h.signIn())
-	e.POST(refreshTokenPath, h.refreshToken()).Use(middlewares.AuthMiddleware)
-	e.POST(logOutPath, h.logOut()).Use(middlewares.AuthMiddleware)
+
+	authorized := e.Group("/")
+	authorized.Use(middlewares.AuthMiddleware)
+	authorized.POST(refreshTokenPath, h.refreshToken())
+	authorized.POST(logOutPath, h.logOut())
 }

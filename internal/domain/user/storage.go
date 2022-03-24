@@ -42,7 +42,42 @@ func (s *Storage) FindById(ctx context.Context, id string) (*User, error) {
 }
 
 func (s *Storage) CollectUserInfoById(ctx context.Context, id string) (*FullUserInfoDTO, error) {
-	query := "SELECT u.id, u.firstName, u.lastName, u.dataOfBirth, u.email, u.shortInfo, r.role, u.createdAt, u.updatedAt, ue.id, ue.eduInstitutionId, ue.eduInstitutionName, ue.faculty, ue.inProgress, ue.startDate, ue.endDate, uc.id, uc.companyId, empt.type, uc.companyName, uc.jobTitle, uc.inProgress, uc.startDate, uc.endDate FROM users u INNER JOIN user_company uc ON (u.id = uc.userId) INNER JOIN user_education ue ON (u.id = ue.userId) INNER JOIN role r ON (u.roleId = r.id) INNER JOIN employment_type empt ON (uc.employmentTypeId = empt.id) WHERE u.id = ?"
+	query := `SELECT 
+       u.id, 
+       u.firstName, 
+       u.lastName, 
+       u.dataOfBirth, 
+       u.email, 
+       u.shortInfo, 
+       r.role, 
+       u.createdAt, 
+       u.updatedAt,
+       
+       ue.id,
+       ei.id,
+       ei.fullName, 
+       ue.faculty, 
+       ue.inProgress, 
+       ue.startDate, 
+       ue.endDate,
+       
+       uc.id,
+       c.id,
+       c.fullName,
+       empt.type, 
+       uc.jobTitle, 
+       uc.inProgress, 
+       uc.startDate, 
+       uc.endDate 
+FROM users u 
+    LEFT JOIN user_company uc ON (u.id = uc.userId)
+    LEFT JOIN company c ON (uc.companyId = c.id)
+    LEFT JOIN user_education ue ON (u.id = ue.userId)
+    LEFT JOIN edu_institution ei ON (ue.eduInstitutionId = ei.id)
+    INNER JOIN role r ON (u.roleId = r.id) 
+    LEFT JOIN employment_type empt ON (uc.employmentTypeId = empt.id) 
+WHERE u.id = ?`
+
 	var user FullUserInfoDTO
 
 	rows, err := s.client.Db.QueryContext(ctx, query, id)
@@ -51,8 +86,10 @@ func (s *Storage) CollectUserInfoById(ctx context.Context, id string) (*FullUser
 	}
 
 	for rows.Next() {
-		var userJob JobUserInfo
-		var userEdu EducationUserInfo
+		var eduInstitution eduInstitution
+		var company company
+		var userJob jobUserInfo
+		var userEdu educationUserInfo
 
 		err = rows.Scan(
 			&user.Id,
@@ -66,17 +103,17 @@ func (s *Storage) CollectUserInfoById(ctx context.Context, id string) (*FullUser
 			&user.UpdatedAt,
 
 			&userEdu.Id,
-			&userEdu.EduInstitutionId,
-			&userEdu.EduInstitutionName,
+			&eduInstitution.Id,
+			&eduInstitution.Name,
 			&userEdu.Faculty,
 			&userEdu.InProgress,
 			&userEdu.StartDate,
 			&userEdu.EndDate,
 
 			&userJob.Id,
-			&userJob.CompanyId,
+			&company.Id,
+			&company.Name,
 			&userJob.EmploymentType,
-			&userJob.CompanyName,
 			&userJob.JobTitle,
 			&userJob.InProgress,
 			&userJob.StartDate,
@@ -86,19 +123,34 @@ func (s *Storage) CollectUserInfoById(ctx context.Context, id string) (*FullUser
 			return nil, err
 		}
 
-		user.Education = append(user.Education, userEdu)
-		user.JobExperience = append(user.JobExperience, userJob)
+		if eduInstitution.Id.Valid {
+			userEdu.EduInstitution = &eduInstitution
+			user.Education = append(user.Education, userEdu)
+		}
+
+		if company.Id.Valid {
+			userJob.Company = &company
+			user.JobExperience = append(user.JobExperience, userJob)
+		}
+	}
+
+	if user.Education == nil {
+		user.Education = []educationUserInfo{}
+	}
+	if user.JobExperience == nil {
+		user.JobExperience = []jobUserInfo{}
 	}
 
 	return &user, nil
 }
 
 func (s *Storage) GetUserByEmail(ctx context.Context, email string) (*User, error) {
-	query := "SELECT firstName, lastName, email, password FROM users WHERE email = ?"
+	query := "SELECT id,firstName, lastName, email, password FROM users WHERE email = ?"
 	var user User
 
 	row := s.client.Db.QueryRowContext(ctx, query, email)
 	err := row.Scan(
+		&user.Id,
 		&user.FirstName,
 		&user.LastName,
 		&user.Email,
@@ -114,7 +166,7 @@ func (s *Storage) GetUserByEmail(ctx context.Context, email string) (*User, erro
 func (s *Storage) Create(ctx context.Context, dto CreateUserDTO) (string, error) {
 	var id = uuid.New().String()
 	query := fmt.Sprintf(
-		"INSERT INTO %s (id, firstName, lastName, email, password) VALUES (?,?,?,?,?)", tableName,
+		"INSERT INTO %s (id, firstName, lastName, email, password, roleId) VALUES (?,?,?,?,?,?)", tableName,
 	)
 
 	passHash, err := generatePassHash(dto.Password)
@@ -122,7 +174,7 @@ func (s *Storage) Create(ctx context.Context, dto CreateUserDTO) (string, error)
 		return "", err
 	}
 
-	_, err = s.client.Db.ExecContext(ctx, query, id, &dto.FirstName, &dto.LastName, &dto.Email, passHash)
+	_, err = s.client.Db.ExecContext(ctx, query, id, &dto.FirstName, &dto.LastName, &dto.Email, passHash, 1)
 	if err != nil {
 		return "", err
 	}

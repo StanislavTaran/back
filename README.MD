@@ -1,3 +1,8 @@
+#DOCS Swagger
+````
+http://localhost:3031/swagger/index.html
+````
+
 ### MIGRATIONS
 
 Create new migration example
@@ -22,3 +27,8 @@ migrate -path migrations -database "mysql://root:test@tcp(localhost:3306)/legend
 ```
 docker exec mysql sh -c 'exec mysqldump --all-databases -uroot -p"$MYSQL_ROOT_PASSWORD"' > ./backups/backup.sql
 ```
+
+###
+Generate swaggger for group (From cmd/)
+```
+swag init --parseDependency -d ../internal/adapters/api/auth```

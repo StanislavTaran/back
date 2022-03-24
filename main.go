@@ -10,6 +10,8 @@ import (
 
 const configPath = "config/config.json"
 
+// @title User API documentation
+// @version 1.0.0
 func main() {
 	serverCfg := server.NewConfig()
 	if err := server.ReadConfig(configPath, serverCfg); err != nil {

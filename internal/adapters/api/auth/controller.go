@@ -13,6 +13,14 @@ import (
 
 const logLocation = "AUTH CONTROLLER:"
 
+// @Summary Sign In
+// @Tags Auth
+// @Accept       json
+// @Produce      json
+// @Param        credentials  body      authDTO.Credentials  true  "Sign In"
+// @Success 200 {object} jwtpackage.TokenInfo
+// @Failure 400 {object} httpResponse.ResponseError
+// @Router /auth/signIn [post]
 func (h *Handler) signIn() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		var creds authDTO.Credentials
@@ -49,6 +57,15 @@ func (h *Handler) signIn() gin.HandlerFunc {
 	}
 }
 
+// @Summary Refresh Token
+// @Tags Auth
+// @Accept       json
+// @Produce      json
+// @Param        refresh token  body      jwtpackage.RT  true  "Refresh Token"
+// @Success 200 {object} jwtpackage.TokenInfo
+// @Failure 400 {object} httpResponse.ResponseError
+// @Failure 401
+// @Router /auth/refresh [post]
 func (h *Handler) refreshToken() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		var rt jwtpackage.RT
@@ -99,6 +116,14 @@ func (h *Handler) refreshToken() gin.HandlerFunc {
 	}
 }
 
+// @Summary Log Out
+// @Tags Auth
+// @Accept       json
+// @Produce      json
+// @Param        refresh token  body      jwtpackage.RT  true  "Log Out"
+// @Success 200
+// @Failure 400 {object} httpResponse.ResponseError
+// @Router /auth/logout [post]
 func (h *Handler) logOut() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		var rt jwtpackage.RT

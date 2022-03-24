@@ -10,6 +10,14 @@ import (
 
 const logLocation = "USER CONTROLLER:"
 
+// @Summary Get user by id
+// @Tags User
+// @Produce      json
+// @Param        id   path      string  true  "user id"
+// @Success 200 {object} userDTO.User
+// @Failure 400 {object} httpResponse.ResponseError
+// @Failure 401
+// @Router /users/:id [get]
 func (h *Handler) getUserById() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		id := ctx.Param("id")
@@ -25,6 +33,15 @@ func (h *Handler) getUserById() gin.HandlerFunc {
 	}
 }
 
+// @Summary Get user info by id
+// @Description Get user info with info about job experience and education
+// @Tags User
+// @Produce      json
+// @Param        id   path      string  true  "user id"
+// @Success 200 {object} userDTO.FullUserInfoDTO
+// @Failure 400 {object} httpResponse.ResponseError
+// @Failure 401
+// @Router /users/:id/profile [get]
 func (h *Handler) getUserFullInfoById() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		id := ctx.Param("id")
@@ -40,6 +57,15 @@ func (h *Handler) getUserFullInfoById() gin.HandlerFunc {
 	}
 }
 
+// @Summary Create User
+// @Description Create user
+// @Tags User
+// @Accept       json
+// @Produce      json
+// @Param        userData  body      userDTO.CreateUserDTO  true  "User data"
+// @Success 200 {object} object{id=string}
+// @Failure 400 {object} httpResponse.ResponseError
+// @Router /users [post]
 func (h *Handler) createUser() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		var dto userDTO.CreateUserDTO

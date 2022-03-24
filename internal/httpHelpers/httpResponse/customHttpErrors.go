@@ -15,6 +15,11 @@ const (
 	VALIDATION_ERR = "Validation error"
 )
 
+type ResponseError struct {
+	Message string `json:"message"`
+	Reason  string `json:"reason"`
+}
+
 func ErrorByType(c *gin.Context, err error) {
 	var message string
 	var code int
@@ -38,29 +43,29 @@ func ErrorByType(c *gin.Context, err error) {
 
 	}
 
-	c.JSON(code, gin.H{
-		"message": message,
-		"reason":  err.Error(),
+	c.JSON(code, &ResponseError{
+		Message: message,
+		Reason:  err.Error(),
 	})
 }
 
 func InternalErr(c *gin.Context, err error) {
-	c.JSON(500, gin.H{
-		"message": APP_ERR,
-		"reason":  err.Error(),
+	c.JSON(500, &ResponseError{
+		Message: APP_ERR,
+		Reason:  err.Error(),
 	})
 }
 
 func RequestErr(c *gin.Context, err error) {
-	c.JSON(400, gin.H{
-		"message": REQ_ERR,
-		"reason":  err.Error(),
+	c.JSON(400, &ResponseError{
+		Message: REQ_ERR,
+		Reason:  err.Error(),
 	})
 }
 
 func RequestErrCustomMessage(c *gin.Context, err error, message string) {
-	c.JSON(400, gin.H{
-		"message": message,
-		"reason":  err.Error(),
+	c.JSON(400, &ResponseError{
+		Message: message,
+		Reason:  err.Error(),
 	})
 }

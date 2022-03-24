@@ -16,7 +16,7 @@ VALUES (
         "johndoe@test.com",
         "password",
         "I am joker",
-        1
+        3
        );
 
 INSERT INTO edu_institution (

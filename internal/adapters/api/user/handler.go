@@ -1,6 +1,7 @@
 package user
 
 import (
+	"back/internal/adapters/middlewares"
 	"back/internal/domain/user"
 	"back/pkg/logger"
 	"back/pkg/mysqlClient"
@@ -32,6 +33,8 @@ func (h *Handler) Register(e *gin.Engine) {
 	e.POST(createPath, h.createUser())
 	e.POST(activatePath, h.activateUser())
 
-	e.GET(getByIdPath, h.getUserById())
-	e.GET(getFullInfoByIdPath, h.getUserFullInfoById())
+	authorized := e.Group("/")
+	authorized.Use(middlewares.AuthMiddleware)
+	authorized.GET(getByIdPath, h.getUserById())
+	authorized.GET(getFullInfoByIdPath, h.getUserFullInfoById())
 }

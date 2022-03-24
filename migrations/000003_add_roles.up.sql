@@ -1,6 +1,6 @@
 INSERT INTO
     `role`(role)
 VALUES
-    ("admin"),
+    ("user"),
     ("moderator"),
-    ("user");
+    ("admin");

@@ -41,3 +41,28 @@ func (s *Storage) Create(ctx context.Context, dto CreateCompanyDTO) (id int64, e
 
 	return id, nil
 }
+
+func (s *Storage) GetListByName(ctx context.Context, name string) (*[]Company, error) {
+	query := fmt.Sprintf("SELECT * FROM %s WHERE fullName LIKE ?", tableName)
+	var companies []Company
+
+	rows, err := s.client.Db.QueryContext(ctx, query, "%"+name+"%")
+	if err != nil {
+		return nil, err
+	}
+	for rows.Next() {
+		var company Company
+		err = rows.Scan(
+			&company.Id,
+			&company.FullName,
+			&company.ShortName,
+			&company.Description,
+		)
+		if err != nil {
+			return nil, err
+		}
+
+		companies = append(companies, company)
+	}
+	return &companies, nil
+}

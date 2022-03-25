@@ -2,6 +2,7 @@ package server
 
 import (
 	"back/internal/adapters/api/auth"
+	"back/internal/adapters/api/company"
 	"back/internal/adapters/api/user"
 	"back/internal/adapters/api/user_company"
 	"back/internal/adapters/middlewares"
@@ -77,4 +78,7 @@ func (s *Server) initRoutes() {
 
 	userCompanyHandler := user_company.NewUserCompanyHandler(s.storage, s.Logger)
 	userCompanyHandler.Register(s.Engine)
+
+	companyHandler := company.NewCompanyHandler(s.storage, s.Logger)
+	companyHandler.Register(s.Engine)
 }

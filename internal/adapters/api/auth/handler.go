@@ -22,8 +22,8 @@ type Handler struct {
 	logger      logger.ILogger
 }
 
-func NewAuthHandler(storage *mysqlClient.MySQLClient, logger logger.ILogger) *Handler {
-	userStorage := user.NewUserStorage(storage)
+func NewAuthHandler(client *mysqlClient.MySQLClient, logger logger.ILogger) *Handler {
+	userStorage := user.NewUserStorage(client)
 
 	RTCache := freecachepackage.NewCacheRepo(100 * 1024 * 1024)
 	helper := jwtpackage.NewHelper(RTCache, logger)
@@ -36,11 +36,6 @@ func NewAuthHandler(storage *mysqlClient.MySQLClient, logger logger.ILogger) *Ha
 }
 
 func (h *Handler) Register(e *gin.Engine) {
-	// @Summary Sign In
-	// @Tags Auth
-	// @Success 200 {object} jwtpackage.Token
-	// @Failure 404 {object} object
-	// @Router /auth/signIn [post]
 	e.POST(signInPath, h.signIn())
 
 	authorized := e.Group("/")

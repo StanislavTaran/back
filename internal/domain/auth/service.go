@@ -8,7 +8,7 @@ import (
 )
 
 type Service struct {
-	userStorage *user.Storage
+	userStorage userStorage
 	jwtHelper   jwtpackage.Helper
 }
 

@@ -3,7 +3,7 @@ package education_institution
 import "context"
 
 type EducationInstitutionService struct {
-	educationInstitutionStorage *Storage
+	educationInstitutionStorage educationInstitutionStorage
 }
 
 func NewEducationInstitutionService(educationInstitutionStorage *Storage) *EducationInstitutionService {

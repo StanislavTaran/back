@@ -5,10 +5,10 @@ import (
 )
 
 type Service struct {
-	userStorage *Storage
+	userStorage storage
 }
 
-func NewUserService(storage *Storage) *Service {
+func NewUserService(storage storage) *Service {
 	return &Service{
 		userStorage: storage,
 	}
@@ -42,8 +42,4 @@ func (us *Service) Create(ctx context.Context, dto CreateUserDTO) (id string, er
 
 func (us *Service) Update(ctx context.Context, dto CreateUserDTO) error {
 	return nil
-}
-
-func (us *Service) ActivateUser(ctx context.Context, id string) (err error) {
-	return us.userStorage.ActivateUser(ctx, id)
 }

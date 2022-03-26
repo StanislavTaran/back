@@ -11,5 +11,4 @@ type userService interface {
 	GetFullUserInfoById(ctx context.Context, id string) (*user.FullUserInfoDTO, error)
 	Create(ctx context.Context, dto user.CreateUserDTO) (id string, err error)
 	Update(ctx context.Context, dto user.CreateUserDTO) error
-	ActivateUser(ctx context.Context, id string) (err error)
 }

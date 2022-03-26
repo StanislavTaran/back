@@ -33,7 +33,6 @@ VALUES (
 INSERT INTO user_education(
                            userId,
                            eduInstitutionId,
-                           eduInstitutionName,
                            faculty,
                            inProgress,
                            startDate,
@@ -42,7 +41,6 @@ INSERT INTO user_education(
 VALUES (
         "1dc33d06-7f85-4f22-8384-9f3621ed00da",
         1,
-        "",
         "Informsaion technology faculty",
         0,
         CURRENT_TIMESTAMP,
@@ -60,7 +58,6 @@ INSERT INTO user_company (
                           userId,
                           companyId,
                           employmentTypeId,
-                          companyName,
                           jobTitle,
                           inProgress,
                           startDate,
@@ -70,7 +67,6 @@ VALUES(
        "1dc33d06-7f85-4f22-8384-9f3621ed00da",
        1,
        1,
-       "",
        "Full-Stackoferflow developer",
        1,
        CURRENT_TIMESTAMP,

@@ -21,7 +21,7 @@ func (uj CreateUserEducationDTO) Validate() error {
 		validation.Field(&uj.EduInstitutionId, validation.Min(1)),
 		validation.Field(&uj.EduInstitutionName, validation.Length(2, 50)),
 		validation.Field(&uj.Faculty, validation.Required, validation.Length(2, 50)),
-		validation.Field(&uj.InProgress, validation.Required, validation.Min(0), validation.Max(1)),
+		validation.Field(&uj.InProgress, validation.Min(0), validation.Max(1)),
 		validation.Field(&uj.StartDate, validation.Required, validation.Max(time.Now())),
 		validation.Field(&uj.EndDate, validation.Max(time.Now())),
 	)

@@ -3,6 +3,7 @@ FROM golang:alpine
 RUN apk update
 RUN apk upgrade
 RUN apk add bash
+RUN apk add git
 
 # Set necessary environmet variables needed for our image
 ENV GO111MODULE=auto \

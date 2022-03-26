@@ -23,7 +23,7 @@ func (uj CreateUserJobExperienceDTO) Validate() error {
 		validation.Field(&uj.CompanyName, validation.Length(2, 50)),
 		validation.Field(&uj.EmploymentTypeId, validation.Required, validation.Min(1), validation.Max(7)),
 		validation.Field(&uj.JobTitle, validation.Required, validation.Length(2, 50)),
-		validation.Field(&uj.InProgress, validation.Required, validation.Min(0), validation.Max(1)),
+		validation.Field(&uj.InProgress, validation.Min(0), validation.Max(1)),
 		validation.Field(&uj.StartDate, validation.Required, validation.Max(time.Now())),
 		validation.Field(&uj.EndDate, validation.Max(time.Now())),
 	)

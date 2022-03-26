@@ -6,7 +6,6 @@ type UserCompany struct {
 	Id               int       `json:"id"`
 	UserId           string    `json:"userId"`
 	CompanyId        int       `json:"companyId"`
-	CompanyName      string    `json:"companyName"`
 	EmploymentTypeId int       `json:"employmentTypeId"`
 	JobTitle         string    `json:"jobTitle"`
 	InProgress       int       `json:"inProgress"`

@@ -1,5 +1,9 @@
 FROM golang:alpine
 
+RUN apk update
+RUN apk upgrade
+RUN apk add bash
+
 # Set necessary environmet variables needed for our image
 ENV GO111MODULE=auto \
     CGO_ENABLED=0 \
@@ -16,6 +20,11 @@ RUN go mod download
 
 # Copy the code into the container
 COPY . .
+
+# Generate swagger docs
+RUN go install github.com/swaggo/swag/cmd/swag@latest
+#COPY --from=itinance/swag /root/swag /usr/local/bin
+RUN swag init --parseDependency --parseInternal --parseDepth 1
 
 # Build the application
 RUN go build -o main main.go

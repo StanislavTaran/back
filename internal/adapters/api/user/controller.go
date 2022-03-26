@@ -100,18 +100,3 @@ func (h *Handler) createUser() gin.HandlerFunc {
 		httpResponse.SuccessData(ctx, map[string]string{"id": id})
 	}
 }
-
-func (h *Handler) activateUser() gin.HandlerFunc {
-	return func(ctx *gin.Context) {
-		id := ctx.Param("id")
-
-		err := h.userService.ActivateUser(ctx, id)
-		if err != nil {
-			httpResponse.ErrorByType(ctx, err)
-			h.logger.Error(logLocation + err.Error())
-			return
-		}
-
-		httpResponse.SuccessOK(ctx)
-	}
-}

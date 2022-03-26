@@ -17,8 +17,8 @@ type Handler struct {
 	logger         logger.ILogger
 }
 
-func NewCompanyHandler(storage *mysqlClient.MySQLClient, logger logger.ILogger) *Handler {
-	companyStorage := company.NewCompanyStorage(storage)
+func NewCompanyHandler(client *mysqlClient.MySQLClient, logger logger.ILogger) *Handler {
+	companyStorage := company.NewCompanyStorage(client)
 	companyService := company.NewCompanyService(companyStorage)
 	return &Handler{
 		companyService: companyService,

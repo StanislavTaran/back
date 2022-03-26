@@ -12,7 +12,6 @@ const (
 	getByIdPath         = "/users/:id"
 	getFullInfoByIdPath = "/users/:id/profile"
 	createPath          = "/users"
-	activatePath        = "/users/:id/activate"
 )
 
 type Handler struct {
@@ -20,8 +19,8 @@ type Handler struct {
 	logger      logger.ILogger
 }
 
-func NewUserHandler(storage *mysqlClient.MySQLClient, logger logger.ILogger) *Handler {
-	userStorage := user.NewUserStorage(storage)
+func NewUserHandler(client *mysqlClient.MySQLClient, logger logger.ILogger) *Handler {
+	userStorage := user.NewUserStorage(client)
 	userService := user.NewUserService(userStorage)
 	return &Handler{
 		userService: userService,
@@ -31,7 +30,6 @@ func NewUserHandler(storage *mysqlClient.MySQLClient, logger logger.ILogger) *Ha
 
 func (h *Handler) Register(e *gin.Engine) {
 	e.POST(createPath, h.createUser())
-	e.POST(activatePath, h.activateUser())
 
 	authorized := e.Group("/")
 	authorized.Use(middlewares.AuthMiddleware)

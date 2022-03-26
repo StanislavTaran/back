@@ -181,15 +181,3 @@ func (s *Storage) Create(ctx context.Context, dto CreateUserDTO) (string, error)
 
 	return id, nil
 }
-
-func (s *Storage) ActivateUser(ctx context.Context, id string) error {
-	query := fmt.Sprintf(
-		"UPDATE %s SET isActive = 1 WHERE id=?", tableName,
-	)
-
-	_, err := s.client.Db.ExecContext(ctx, query, id)
-	if err != nil {
-		return err
-	}
-	return nil
-}

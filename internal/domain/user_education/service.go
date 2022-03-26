@@ -7,11 +7,11 @@ import (
 )
 
 type UserEducationService struct {
-	userEducationStorage  *Storage
-	eduInstitutionStorage *education_institution.Storage
+	userEducationStorage  userEducationStorage
+	eduInstitutionStorage eduInstitutionStorage
 }
 
-func NewUserEducationService(userEducationStorage *Storage, eduInstitutionStorage *education_institution.Storage) *UserEducationService {
+func NewUserEducationService(userEducationStorage userEducationStorage, eduInstitutionStorage eduInstitutionStorage) *UserEducationService {
 	return &UserEducationService{
 		userEducationStorage:  userEducationStorage,
 		eduInstitutionStorage: eduInstitutionStorage,

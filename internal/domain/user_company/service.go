@@ -7,8 +7,8 @@ import (
 )
 
 type UserCompanyService struct {
-	userCompanyStorage *Storage
-	companyStorage     *companyDomain.Storage
+	userCompanyStorage userCompanyStorage
+	companyStorage     companyStorage
 }
 
 func NewUserCompanyService(userCompanyStorage *Storage, companyStorage *companyDomain.Storage) *UserCompanyService {

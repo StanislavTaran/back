@@ -3,10 +3,10 @@ package company
 import "context"
 
 type CompanyService struct {
-	companyStorage *Storage
+	companyStorage companyStorage
 }
 
-func NewCompanyService(companyStorage *Storage) *CompanyService {
+func NewCompanyService(companyStorage companyStorage) *CompanyService {
 	return &CompanyService{
 		companyStorage: companyStorage,
 	}

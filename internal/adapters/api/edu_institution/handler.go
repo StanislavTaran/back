@@ -17,8 +17,8 @@ type Handler struct {
 	logger                logger.ILogger
 }
 
-func NewEduInstitutionHandler(storage *mysqlClient.MySQLClient, logger logger.ILogger) *Handler {
-	eduInstitutionStorage := education_institution.NewEducationInstitutionStorage(storage)
+func NewEduInstitutionHandler(client *mysqlClient.MySQLClient, logger logger.ILogger) *Handler {
+	eduInstitutionStorage := education_institution.NewEducationInstitutionStorage(client)
 	eduInstitutionService := education_institution.NewEducationInstitutionService(eduInstitutionStorage)
 	return &Handler{
 		eduInstitutionService: eduInstitutionService,

@@ -63,12 +63,7 @@ func (m *MinioClient) Configure() error {
 func (m *MinioClient) MakeBucket(ctx context.Context, bucketName string) error {
 	err := m.Storage.MakeBucket(ctx, bucketName, minio.MakeBucketOptions{})
 	if err != nil {
-		exists, errBucketExists := m.Storage.BucketExists(ctx, bucketName)
-		if errBucketExists == nil && exists {
-			return errors.New(fmt.Sprintf("We already own %s\n", bucketName))
-		} else {
-			return err
-		}
+		return err
 	}
 	return nil
 }

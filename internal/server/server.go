@@ -9,6 +9,7 @@ import (
 	"back/internal/adapters/api/user_education"
 	"back/internal/adapters/middlewares"
 	"back/pkg/logger"
+	"back/pkg/minioClient"
 	"back/pkg/mysqlClient"
 	"github.com/gin-gonic/gin"
 	ginSwagger "github.com/swaggo/gin-swagger"
@@ -18,10 +19,11 @@ import (
 )
 
 type Server struct {
-	config  *Config
-	Engine  *gin.Engine
-	storage *mysqlClient.MySQLClient
-	Logger  logger.ILogger
+	config      *Config
+	Engine      *gin.Engine
+	storage     *mysqlClient.MySQLClient
+	fileStorage *minioClient.MinioClient
+	Logger      logger.ILogger
 }
 
 func NewServer(config *Config, logger logger.ILogger) *Server {
@@ -34,6 +36,11 @@ func NewServer(config *Config, logger logger.ILogger) *Server {
 
 func (s *Server) Run() (err error) {
 	err = s.configureMySQLStorage()
+	if err != nil {
+		return err
+	}
+
+	err = s.configureAWSStorage()
 	if err != nil {
 		return err
 	}
@@ -62,6 +69,18 @@ func (s *Server) configureMySQLStorage() error {
 	return nil
 }
 
+func (s *Server) configureAWSStorage() error {
+	storage := minioClient.NewMinioClient(s.config.AWSStorage)
+
+	err := storage.Connect()
+	if err != nil {
+		return err
+	}
+
+	s.fileStorage = storage
+	return nil
+}
+
 func (s *Server) initRoutes() {
 	s.Engine.Use(middlewares.CORSMiddleware())
 	s.Engine.GET("/ping", func(c *gin.Context) {
@@ -75,7 +94,7 @@ func (s *Server) initRoutes() {
 	authHandler := auth.NewAuthHandler(s.storage, s.Logger)
 	authHandler.Register(s.Engine)
 
-	userHandler := user.NewUserHandler(s.storage, s.Logger)
+	userHandler := user.NewUserHandler(s.storage, s.fileStorage, s.Logger)
 	userHandler.Register(s.Engine)
 
 	userCompanyHandler := user_company.NewUserCompanyHandler(s.storage, s.Logger)

@@ -1,15 +1,17 @@
 package server
 
 import (
+	"back/pkg/minioClient"
 	"back/pkg/mysqlClient"
 	"encoding/json"
 	"io/ioutil"
 )
 
 type Config struct {
-	BindAddr string              `json:"port"`
-	LogLevel string              `json:"logLevel"`
-	Mysql    *mysqlClient.Config `json:"mysql"`
+	BindAddr   string              `json:"port"`
+	LogLevel   string              `json:"logLevel"`
+	Mysql      *mysqlClient.Config `json:"mysql"`
+	AWSStorage *minioClient.Config `json:"awsStorage"`
 }
 
 // NewConfig - initialize new config with default values for 'outRunner' server.

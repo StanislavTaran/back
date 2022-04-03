@@ -49,6 +49,7 @@ func (s *Storage) CollectUserInfoById(ctx context.Context, id string) (*FullUser
        u.dataOfBirth, 
        u.email, 
        u.shortInfo, 
+       u.avatar, 
        r.role, 
        u.createdAt, 
        u.updatedAt,
@@ -98,6 +99,7 @@ WHERE u.id = ?`
 			&user.DateOfBirth,
 			&user.Email,
 			&user.ShortInfo,
+			&user.Avatar,
 			&user.Role,
 			&user.CreatedAt,
 			&user.UpdatedAt,
@@ -180,4 +182,17 @@ func (s *Storage) Create(ctx context.Context, dto CreateUserDTO) (string, error)
 	}
 
 	return id, nil
+}
+
+func (s *Storage) UpdateAvatar(ctx context.Context, userId, avatarPath string) error {
+	query := fmt.Sprintf(
+		"UPDATE %s SET avatar = ? WHERE id = ?", tableName,
+	)
+
+	_, err := s.client.Db.ExecContext(ctx, query, avatarPath, userId)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

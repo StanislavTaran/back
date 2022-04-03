@@ -5,5 +5,13 @@
     "connectionUrl":  "root:test@tcp(mysql:3306)/legendary_waffle?charset=utf8mb4&parseTime=True&loc=Local",
     "maxRetries": 40,
     "waitRetry": 1500
+  },
+  "awsStorage": {
+    "connectionUrl": "minio:9000",
+    "maxRetries": 40,
+    "waitRetry": 1500,
+    "accessKeyId": "root",
+    "secretKey": "testtest",
+    "useSSL": false
   }
 }

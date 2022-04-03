@@ -6,16 +6,14 @@ import (
 
 type Service struct {
 	userStorage storage
+	fileStorage fileStorage
 }
 
-func NewUserService(storage storage) *Service {
+func NewUserService(storage storage, fileStorage fileStorage) *Service {
 	return &Service{
 		userStorage: storage,
+		fileStorage: fileStorage,
 	}
-}
-
-func (us *Service) Find(ctx context.Context, query map[string]interface{}) ([]*User, error) {
-	return nil, nil
 }
 
 func (us *Service) FindById(ctx context.Context, id string) (*User, error) {
@@ -40,6 +38,18 @@ func (us *Service) Create(ctx context.Context, dto CreateUserDTO) (id string, er
 	return us.userStorage.Create(ctx, dto)
 }
 
-func (us *Service) Update(ctx context.Context, dto CreateUserDTO) error {
-	return nil
+func (us *Service) UploadUserAvatar(ctx context.Context, bucketName, fileName, filePath string, contentType string) (*UploadFileInfo, error) {
+	info, err := us.fileStorage.Upload(ctx, bucketName, fileName, filePath, contentType)
+	if err != nil {
+		return nil, err
+	}
+
+	userId := ctx.Value("userId")
+
+	err = us.userStorage.UpdateAvatar(ctx, userId.(string), info.Location)
+	if err != nil {
+		return nil, err
+	}
+
+	return info, nil
 }

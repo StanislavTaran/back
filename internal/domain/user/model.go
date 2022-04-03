@@ -12,6 +12,7 @@ type User struct {
 	DateOfBirth null.Time   `json:"dateOfBirth" swaggertype:"primitive,string"`
 	Email       string      `json:"email"`
 	Password    string      `json:"password,omitempty"`
+	Avatar      null.String `json:"avatar"`
 	ShortInfo   null.String `json:"shortInfo" swaggertype:"primitive,string"`
 	RoleId      uint8       `json:"roleId,omitempty"`
 	CreatedAt   time.Time   `json:"createdAt"`

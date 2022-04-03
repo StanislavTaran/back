@@ -63,7 +63,12 @@ func (m *MinioClient) Configure() error {
 func (m *MinioClient) MakeBucket(ctx context.Context, bucketName string) error {
 	err := m.Storage.MakeBucket(ctx, bucketName, minio.MakeBucketOptions{})
 	if err != nil {
-		return err
+		exists, errBucketExists := m.Storage.BucketExists(ctx, bucketName)
+		if errBucketExists == nil && exists {
+			return errors.New(fmt.Sprintf("We already own %s\n", bucketName))
+		} else {
+			return err
+		}
 	}
 	return nil
 }
@@ -72,15 +77,9 @@ func (m *MinioClient) Upload(ctx context.Context, bucketName, fileName, filePath
 
 	info, err := m.Storage.FPutObject(ctx, bucketName, fileName, filePath, minio.PutObjectOptions{ContentType: contentType})
 	if err != nil {
-		exists, _ := m.Storage.BucketExists(ctx, bucketName)
-		if !exists {
-			err = m.MakeBucket(ctx, bucketName)
-			if err != nil {
-				return nil, err
-			}
-		}
 		return nil, err
 	}
+
 	return &UploadFileInfo{
 		info,
 		m.Config.ConnectionURL,

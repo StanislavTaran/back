@@ -72,7 +72,7 @@ func (s *Server) configureMySQLStorage() error {
 func (s *Server) configureAWSStorage() error {
 	storage := minioClient.NewMinioClient(s.config.AWSStorage)
 
-	err := storage.Connect()
+	err := storage.Configure()
 	if err != nil {
 		return err
 	}

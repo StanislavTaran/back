@@ -12,6 +12,7 @@
     "waitRetry": 1500,
     "accessKeyId": "root",
     "secretKey": "testtest",
-    "useSSL": false
+    "useSSL": false,
+    "buckets": ["users"]
   }
 }

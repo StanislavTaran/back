@@ -2,8 +2,8 @@ package auth
 
 import (
 	"back/internal/adapters/middlewares"
+	"back/internal/adapters/mysql/user"
 	"back/internal/domain/auth"
-	"back/internal/domain/user"
 	freecachepackage "back/pkg/cache/freecache"
 	jwtpackage "back/pkg/jwt"
 	"back/pkg/logger"

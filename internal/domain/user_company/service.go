@@ -11,7 +11,7 @@ type UserCompanyService struct {
 	companyStorage     companyStorage
 }
 
-func NewUserCompanyService(userCompanyStorage *Storage, companyStorage *companyDomain.Storage) *UserCompanyService {
+func NewUserCompanyService(userCompanyStorage userCompanyStorage, companyStorage companyStorage) *UserCompanyService {
 	return &UserCompanyService{
 		userCompanyStorage: userCompanyStorage,
 		companyStorage:     companyStorage,
@@ -23,7 +23,7 @@ func (u *UserCompanyService) Create(ctx context.Context, dto CreateUserJobExperi
 		if dto.CompanyName == "" {
 			return 0, errors.New("company not provided")
 		}
-		var companyDto companyDomain.CreateCompanyDTO = companyDomain.CreateCompanyDTO{
+		var companyDto = companyDomain.CreateCompanyDTO{
 			FullName:    dto.CompanyName,
 			ShortName:   "",
 			Description: "",

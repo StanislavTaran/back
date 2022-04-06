@@ -1,6 +1,7 @@
 package education_institution
 
 import (
+	eduInstitutionDomain "back/internal/domain/education_institution"
 	"back/pkg/mysqlClient"
 	"context"
 	"fmt"
@@ -20,7 +21,7 @@ func NewEducationInstitutionStorage(mysql *mysqlClient.MySQLClient) *Storage {
 	}
 }
 
-func (s *Storage) Create(ctx context.Context, dto CreateEducationInstitutionDTO) (id int64, err error) {
+func (s *Storage) Create(ctx context.Context, dto eduInstitutionDomain.CreateEducationInstitutionDTO) (id int64, err error) {
 	query := fmt.Sprintf("INSERT INTO %s (fullName,shortName,description) VALUES(?,?,?)", tableName)
 
 	res, err := s.client.Db.ExecContext(
@@ -42,16 +43,16 @@ func (s *Storage) Create(ctx context.Context, dto CreateEducationInstitutionDTO)
 	return id, nil
 }
 
-func (s *Storage) GetListByName(ctx context.Context, name string) (*[]EducationInstitution, error) {
+func (s *Storage) GetListByName(ctx context.Context, name string) (*[]eduInstitutionDomain.EducationInstitution, error) {
 	query := fmt.Sprintf("SELECT * FROM %s WHERE fullName LIKE ?", tableName)
-	var eduList []EducationInstitution
+	var eduList []eduInstitutionDomain.EducationInstitution
 
 	rows, err := s.client.Db.QueryContext(ctx, query, "%"+name+"%")
 	if err != nil {
 		return nil, err
 	}
 	for rows.Next() {
-		var eduInst EducationInstitution
+		var eduInst eduInstitutionDomain.EducationInstitution
 		err = rows.Scan(
 			&eduInst.Id,
 			&eduInst.FullName,

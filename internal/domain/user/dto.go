@@ -42,28 +42,28 @@ func (c CreateUserDTO) Validate() error {
 	)
 }
 
-type eduInstitution struct {
+type EduInstitution struct {
 	Id   null.Int    `json:"id" swaggertype:"primitive,number"`
 	Name null.String `json:"name" swaggertype:"primitive,string"`
 }
 
-type educationUserInfo struct {
+type EducationUserInfo struct {
 	Id             null.Int        `json:"id" swaggertype:"primitive,number"`
-	EduInstitution *eduInstitution `json:"eduInstitution"`
+	EduInstitution *EduInstitution `json:"eduInstitution"`
 	Faculty        null.String     `json:"faculty" swaggertype:"primitive,string"`
 	InProgress     null.Int        `json:"inProgress" swaggertype:"primitive,number"`
 	StartDate      null.Time       `json:"startDate" swaggertype:"primitive,string"`
 	EndDate        null.Time       `json:"endDate" swaggertype:"primitive,string"`
 }
 
-type company struct {
+type Company struct {
 	Id   null.Int    `json:"id" swaggertype:"primitive,number"`
 	Name null.String `json:"name" swaggertype:"primitive,string"`
 }
 
-type jobUserInfo struct {
+type JobUserInfo struct {
 	Id             null.Int    `json:"id" swaggertype:"primitive,number"`
-	Company        *company    `json:"company"`
+	Company        *Company    `json:"company"`
 	EmploymentType null.String `json:"employmentType" swaggertype:"primitive,string"`
 	JobTitle       null.String `json:"jobTitle" swaggertype:"primitive,string"`
 	InProgress     null.Int    `json:"inProgress" swaggertype:"primitive,number"`
@@ -74,6 +74,6 @@ type jobUserInfo struct {
 type FullUserInfoDTO struct {
 	User
 	Role          string              `json:"role"`
-	Education     []educationUserInfo `json:"education"`
-	JobExperience []jobUserInfo       `json:"jobExperience"`
+	Education     []EducationUserInfo `json:"education"`
+	JobExperience []JobUserInfo       `json:"jobExperience"`
 }

@@ -1,6 +1,7 @@
 package user
 
 import (
+	userDomain "back/internal/domain/user"
 	"back/pkg/mysqlClient"
 	"context"
 	"fmt"
@@ -21,9 +22,9 @@ func NewUserStorage(mysql *mysqlClient.MySQLClient) *Storage {
 	}
 }
 
-func (s *Storage) FindById(ctx context.Context, id string) (*User, error) {
+func (s *Storage) FindById(ctx context.Context, id string) (*userDomain.User, error) {
 	query := "SELECT id, firstName, lastName, email, createdAt, updatedAt FROM users WHERE id = ?"
-	var user User
+	var user userDomain.User
 
 	row := s.client.Db.QueryRowContext(ctx, query, id)
 	err := row.Scan(
@@ -41,7 +42,7 @@ func (s *Storage) FindById(ctx context.Context, id string) (*User, error) {
 	return &user, nil
 }
 
-func (s *Storage) CollectUserInfoById(ctx context.Context, id string) (*FullUserInfoDTO, error) {
+func (s *Storage) CollectUserInfoById(ctx context.Context, id string) (*userDomain.FullUserInfoDTO, error) {
 	query := `SELECT 
        u.id, 
        u.firstName, 
@@ -79,7 +80,7 @@ FROM users u
     LEFT JOIN employment_type empt ON (uc.employmentTypeId = empt.id) 
 WHERE u.id = ?`
 
-	var user FullUserInfoDTO
+	var user userDomain.FullUserInfoDTO
 
 	rows, err := s.client.Db.QueryContext(ctx, query, id)
 	if err != nil {
@@ -87,10 +88,10 @@ WHERE u.id = ?`
 	}
 
 	for rows.Next() {
-		var eduInstitution eduInstitution
-		var company company
-		var userJob jobUserInfo
-		var userEdu educationUserInfo
+		var eduInstitution userDomain.EduInstitution
+		var company userDomain.Company
+		var userJob userDomain.JobUserInfo
+		var userEdu userDomain.EducationUserInfo
 
 		err = rows.Scan(
 			&user.Id,
@@ -137,18 +138,18 @@ WHERE u.id = ?`
 	}
 
 	if user.Education == nil {
-		user.Education = []educationUserInfo{}
+		user.Education = []userDomain.EducationUserInfo{}
 	}
 	if user.JobExperience == nil {
-		user.JobExperience = []jobUserInfo{}
+		user.JobExperience = []userDomain.JobUserInfo{}
 	}
 
 	return &user, nil
 }
 
-func (s *Storage) GetUserByEmail(ctx context.Context, email string) (*User, error) {
+func (s *Storage) GetUserByEmail(ctx context.Context, email string) (*userDomain.User, error) {
 	query := "SELECT id,firstName, lastName, email, password FROM users WHERE email = ?"
-	var user User
+	var user userDomain.User
 
 	row := s.client.Db.QueryRowContext(ctx, query, email)
 	err := row.Scan(
@@ -165,13 +166,13 @@ func (s *Storage) GetUserByEmail(ctx context.Context, email string) (*User, erro
 	return &user, nil
 }
 
-func (s *Storage) Create(ctx context.Context, dto CreateUserDTO) (string, error) {
+func (s *Storage) Create(ctx context.Context, dto userDomain.CreateUserDTO) (string, error) {
 	var id = uuid.New().String()
 	query := fmt.Sprintf(
 		"INSERT INTO %s (id, firstName, lastName, email, password, roleId) VALUES (?,?,?,?,?,?)", tableName,
 	)
 
-	passHash, err := generatePassHash(dto.Password)
+	passHash, err := userDomain.GeneratePassHash(dto.Password)
 	if err != nil {
 		return "", err
 	}

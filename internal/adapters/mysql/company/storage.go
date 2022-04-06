@@ -1,6 +1,7 @@
 package company
 
 import (
+	companyDomain "back/internal/domain/company"
 	"back/pkg/mysqlClient"
 	"context"
 	"fmt"
@@ -20,7 +21,7 @@ func NewCompanyStorage(mysql *mysqlClient.MySQLClient) *Storage {
 	}
 }
 
-func (s *Storage) Create(ctx context.Context, dto CreateCompanyDTO) (id int64, err error) {
+func (s *Storage) Create(ctx context.Context, dto companyDomain.CreateCompanyDTO) (id int64, err error) {
 	query := fmt.Sprintf("INSERT INTO %s (fullName,shortName,description) VALUES(?,?,?)", tableName)
 
 	res, err := s.client.Db.ExecContext(
@@ -42,16 +43,16 @@ func (s *Storage) Create(ctx context.Context, dto CreateCompanyDTO) (id int64, e
 	return id, nil
 }
 
-func (s *Storage) GetListByName(ctx context.Context, name string) (*[]Company, error) {
+func (s *Storage) GetListByName(ctx context.Context, name string) (*[]companyDomain.Company, error) {
 	query := fmt.Sprintf("SELECT * FROM %s WHERE fullName LIKE ?", tableName)
-	var companies []Company
+	var companies []companyDomain.Company
 
 	rows, err := s.client.Db.QueryContext(ctx, query, "%"+name+"%")
 	if err != nil {
 		return nil, err
 	}
 	for rows.Next() {
-		var company Company
+		var company companyDomain.Company
 		err = rows.Scan(
 			&company.Id,
 			&company.FullName,

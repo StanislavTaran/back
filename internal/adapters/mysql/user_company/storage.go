@@ -1,6 +1,7 @@
 package user_company
 
 import (
+	userCompanyDomain "back/internal/domain/user_company"
 	"back/pkg/mysqlClient"
 	"context"
 	"fmt"
@@ -20,7 +21,7 @@ func NewUserCompanyStorage(mysql *mysqlClient.MySQLClient) *Storage {
 	}
 }
 
-func (s *Storage) Create(ctx context.Context, dto CreateUserJobExperienceDTO) (int64, error) {
+func (s *Storage) Create(ctx context.Context, dto userCompanyDomain.CreateUserJobExperienceDTO) (int64, error) {
 	var query = fmt.Sprintf("INSERT INTO %s (userId,companyId,employmentTypeId,jobTitle,inProgress,startDate,endDate) VALUES(?,?,?,?,?,?,?)", tableName)
 
 	res, err := s.client.Db.ExecContext(

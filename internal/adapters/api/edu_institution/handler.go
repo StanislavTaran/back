@@ -2,6 +2,7 @@ package edu_institution
 
 import (
 	"back/internal/adapters/middlewares"
+	mysqlEduInstitution "back/internal/adapters/mysql/education_institution"
 	"back/internal/domain/education_institution"
 	"back/pkg/logger"
 	"back/pkg/mysqlClient"
@@ -18,7 +19,7 @@ type Handler struct {
 }
 
 func NewEduInstitutionHandler(client *mysqlClient.MySQLClient, logger logger.ILogger) *Handler {
-	eduInstitutionStorage := education_institution.NewEducationInstitutionStorage(client)
+	eduInstitutionStorage := mysqlEduInstitution.NewEducationInstitutionStorage(client)
 	eduInstitutionService := education_institution.NewEducationInstitutionService(eduInstitutionStorage)
 	return &Handler{
 		eduInstitutionService: eduInstitutionService,

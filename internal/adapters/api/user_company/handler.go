@@ -2,7 +2,8 @@ package user_company
 
 import (
 	"back/internal/adapters/middlewares"
-	"back/internal/domain/company"
+	"back/internal/adapters/mysql/company"
+	mysqlUserCompany "back/internal/adapters/mysql/user_company"
 	"back/internal/domain/user_company"
 	"back/pkg/logger"
 	"back/pkg/mysqlClient"
@@ -20,7 +21,7 @@ type Handler struct {
 
 func NewUserCompanyHandler(storage *mysqlClient.MySQLClient, logger logger.ILogger) *Handler {
 	companyStorage := company.NewCompanyStorage(storage)
-	userCompanyStorage := user_company.NewUserCompanyStorage(storage)
+	userCompanyStorage := mysqlUserCompany.NewUserCompanyStorage(storage)
 	userCompanyService := user_company.NewUserCompanyService(userCompanyStorage, companyStorage)
 	return &Handler{
 		userCompanyService: userCompanyService,

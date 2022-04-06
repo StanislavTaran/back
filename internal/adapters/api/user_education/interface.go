@@ -6,5 +6,5 @@ import (
 )
 
 type userEducationService interface {
-	Create(ctx context.Context, dto user_education.CreateUserEducationDTO) (id int64, err error)
+	Create(ctx context.Context, dto user_education.CreateUserEducationInputDTO) (id int64, err error)
 }

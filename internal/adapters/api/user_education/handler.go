@@ -2,7 +2,8 @@ package user_education
 
 import (
 	"back/internal/adapters/middlewares"
-	"back/internal/domain/education_institution"
+	"back/internal/adapters/mysql/education_institution"
+	mysqlUserEducation "back/internal/adapters/mysql/user_education"
 	"back/internal/domain/user_education"
 	"back/pkg/logger"
 	"back/pkg/mysqlClient"
@@ -20,7 +21,7 @@ type Handler struct {
 
 func NewUserEducationHandler(storage *mysqlClient.MySQLClient, logger logger.ILogger) *Handler {
 	eduStorage := education_institution.NewEducationInstitutionStorage(storage)
-	userEduStorage := user_education.NewUserEducationStorage(storage)
+	userEduStorage := mysqlUserEducation.NewUserEducationStorage(storage)
 	userEducationService := user_education.NewUserEducationService(userEduStorage, eduStorage)
 	return &Handler{
 		userEducationService: userEducationService,

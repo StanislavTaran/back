@@ -1,6 +1,7 @@
 package user
 
 import (
+	"back/internal/domain/user"
 	"back/pkg/minioClient"
 	"context"
 )
@@ -19,13 +20,13 @@ func NewUserFileStorage(client *minioClient.MinioClient) *userFileStorage {
 	}
 }
 
-func (f *userFileStorage) Upload(ctx context.Context, bucket, fileName, filePath string, contentType string) (*UploadFileInfo, error) {
+func (f *userFileStorage) Upload(ctx context.Context, bucket, fileName, filePath string, contentType string) (*user.UploadFileInfo, error) {
 	i, err := f.client.Upload(ctx, bucket, fileName, filePath, contentType)
 	if err != nil {
 		return nil, err
 	}
 
-	return &UploadFileInfo{
+	return &user.UploadFileInfo{
 		Location: i.Domain + "/" + i.Bucket + "/" + i.Key,
 	}, nil
 }

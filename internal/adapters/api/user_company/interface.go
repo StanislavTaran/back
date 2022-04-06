@@ -6,5 +6,5 @@ import (
 )
 
 type userCompanyService interface {
-	Create(ctx context.Context, dto user_company.CreateUserJobExperienceDTO) (id int64, err error)
+	Create(ctx context.Context, dto user_company.CreateUserJobExperienceInputDTO) (id int64, err error)
 }

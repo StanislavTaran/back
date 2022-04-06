@@ -5,7 +5,7 @@ import (
 	"time"
 )
 
-type CreateUserEducationDTO struct {
+type CreateUserEducationInputDTO struct {
 	UserId             string    `json:"userId"`
 	EduInstitutionId   int64     `json:"eduInstitutionId,omitempty"`
 	EduInstitutionName string    `json:"eduInstitutionName,omitempty"`
@@ -15,7 +15,7 @@ type CreateUserEducationDTO struct {
 	EndDate            time.Time `json:"endDate,omitempty"`
 }
 
-func (uj CreateUserEducationDTO) Validate() error {
+func (uj CreateUserEducationInputDTO) Validate() error {
 	return validation.ValidateStruct(&uj,
 		validation.Field(&uj.UserId, validation.Required, validation.Length(36, 36)),
 		validation.Field(&uj.EduInstitutionId, validation.Min(1)),

@@ -5,7 +5,7 @@ import (
 	"time"
 )
 
-type CreateUserJobExperienceDTO struct {
+type CreateUserJobExperienceInputDTO struct {
 	UserId           string    `json:"userId"`
 	CompanyId        int64     `json:"companyId,omitempty"`
 	CompanyName      string    `json:"companyName,omitempty"`
@@ -16,7 +16,7 @@ type CreateUserJobExperienceDTO struct {
 	EndDate          time.Time `json:"endDate,omitempty"`
 }
 
-func (uj CreateUserJobExperienceDTO) Validate() error {
+func (uj CreateUserJobExperienceInputDTO) Validate() error {
 	return validation.ValidateStruct(&uj,
 		validation.Field(&uj.UserId, validation.Required, validation.Length(36, 36)),
 		validation.Field(&uj.CompanyId, validation.Min(1)),

@@ -8,7 +8,7 @@ import (
 
 var EMAIL_REGEXP = regexp.MustCompile("(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])")
 
-type GetUsersDTO struct {
+type GetUsersInputDTO struct {
 	Query struct {
 		Id        string `json:"id"`
 		FirstName string `json:"firstName"`
@@ -26,14 +26,14 @@ type GetUsersDTO struct {
 	}
 }
 
-type CreateUserDTO struct {
+type CreateUserInputDTO struct {
 	FirstName string `json:"firstName"`
 	LastName  string `json:"lastName"`
 	Password  string `json:"password"`
 	Email     string `json:"email"`
 }
 
-func (c CreateUserDTO) Validate() error {
+func (c CreateUserInputDTO) Validate() error {
 	return validation.ValidateStruct(&c,
 		validation.Field(&c.FirstName, validation.Required, validation.Length(2, 20)),
 		validation.Field(&c.LastName, validation.Required, validation.Length(2, 20)),
@@ -42,38 +42,38 @@ func (c CreateUserDTO) Validate() error {
 	)
 }
 
-type eduInstitution struct {
+type EduInstitutionOutput struct {
 	Id   null.Int    `json:"id" swaggertype:"primitive,number"`
 	Name null.String `json:"name" swaggertype:"primitive,string"`
 }
 
-type educationUserInfo struct {
-	Id             null.Int        `json:"id" swaggertype:"primitive,number"`
-	EduInstitution *eduInstitution `json:"eduInstitution"`
-	Faculty        null.String     `json:"faculty" swaggertype:"primitive,string"`
-	InProgress     null.Int        `json:"inProgress" swaggertype:"primitive,number"`
-	StartDate      null.Time       `json:"startDate" swaggertype:"primitive,string"`
-	EndDate        null.Time       `json:"endDate" swaggertype:"primitive,string"`
+type EducationUserInfo struct {
+	Id             null.Int              `json:"id" swaggertype:"primitive,number"`
+	EduInstitution *EduInstitutionOutput `json:"eduInstitution"`
+	Faculty        null.String           `json:"faculty" swaggertype:"primitive,string"`
+	InProgress     null.Int              `json:"inProgress" swaggertype:"primitive,number"`
+	StartDate      null.Time             `json:"startDate" swaggertype:"primitive,string"`
+	EndDate        null.Time             `json:"endDate" swaggertype:"primitive,string"`
 }
 
-type company struct {
+type CompanyOutput struct {
 	Id   null.Int    `json:"id" swaggertype:"primitive,number"`
 	Name null.String `json:"name" swaggertype:"primitive,string"`
 }
 
-type jobUserInfo struct {
-	Id             null.Int    `json:"id" swaggertype:"primitive,number"`
-	Company        *company    `json:"company"`
-	EmploymentType null.String `json:"employmentType" swaggertype:"primitive,string"`
-	JobTitle       null.String `json:"jobTitle" swaggertype:"primitive,string"`
-	InProgress     null.Int    `json:"inProgress" swaggertype:"primitive,number"`
-	StartDate      null.Time   `json:"startDate" swaggertype:"primitive,string"`
-	EndDate        null.Time   `json:"endDate" swaggertype:"primitive,string"`
+type JobUserInfo struct {
+	Id             null.Int       `json:"id" swaggertype:"primitive,number"`
+	Company        *CompanyOutput `json:"company"`
+	EmploymentType null.String    `json:"employmentType" swaggertype:"primitive,string"`
+	JobTitle       null.String    `json:"jobTitle" swaggertype:"primitive,string"`
+	InProgress     null.Int       `json:"inProgress" swaggertype:"primitive,number"`
+	StartDate      null.Time      `json:"startDate" swaggertype:"primitive,string"`
+	EndDate        null.Time      `json:"endDate" swaggertype:"primitive,string"`
 }
 
-type FullUserInfoDTO struct {
+type FullUserInfoOutputDTO struct {
 	User
 	Role          string              `json:"role"`
-	Education     []educationUserInfo `json:"education"`
-	JobExperience []jobUserInfo       `json:"jobExperience"`
+	Education     []EducationUserInfo `json:"education"`
+	JobExperience []JobUserInfo       `json:"jobExperience"`
 }

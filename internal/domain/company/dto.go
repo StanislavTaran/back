@@ -1,6 +1,6 @@
 package company
 
-type CreateCompanyDTO struct {
+type CreateCompanyInputDTO struct {
 	FullName    string `json:"fullName"`
 	ShortName   string `json:"shortName"`
 	Description string `json:"description"`

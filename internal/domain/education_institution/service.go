@@ -1,12 +1,14 @@
 package education_institution
 
-import "context"
+import (
+	"context"
+)
 
 type EducationInstitutionService struct {
 	educationInstitutionStorage educationInstitutionStorage
 }
 
-func NewEducationInstitutionService(educationInstitutionStorage *Storage) *EducationInstitutionService {
+func NewEducationInstitutionService(educationInstitutionStorage educationInstitutionStorage) *EducationInstitutionService {
 	return &EducationInstitutionService{
 		educationInstitutionStorage: educationInstitutionStorage,
 	}

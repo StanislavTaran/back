@@ -1,26 +1,27 @@
-package education_institution
+package company
 
 import (
+	companyDomain "back/internal/domain/company"
 	"back/pkg/mysqlClient"
 	"context"
 	"fmt"
 )
 
 const (
-	tableName = `edu_institution`
+	tableName = `company`
 )
 
 type Storage struct {
 	client *mysqlClient.MySQLClient
 }
 
-func NewEducationInstitutionStorage(mysql *mysqlClient.MySQLClient) *Storage {
+func NewCompanyStorage(mysql *mysqlClient.MySQLClient) *Storage {
 	return &Storage{
 		client: mysql,
 	}
 }
 
-func (s *Storage) Create(ctx context.Context, dto CreateEducationInstitutionDTO) (id int64, err error) {
+func (s *Storage) Create(ctx context.Context, dto companyDomain.CreateCompanyInputDTO) (id int64, err error) {
 	query := fmt.Sprintf("INSERT INTO %s (fullName,shortName,description) VALUES(?,?,?)", tableName)
 
 	res, err := s.client.Db.ExecContext(
@@ -42,27 +43,27 @@ func (s *Storage) Create(ctx context.Context, dto CreateEducationInstitutionDTO)
 	return id, nil
 }
 
-func (s *Storage) GetListByName(ctx context.Context, name string) (*[]EducationInstitution, error) {
+func (s *Storage) GetListByName(ctx context.Context, name string) (*[]companyDomain.Company, error) {
 	query := fmt.Sprintf("SELECT * FROM %s WHERE fullName LIKE ?", tableName)
-	var eduList []EducationInstitution
+	var companies []companyDomain.Company
 
 	rows, err := s.client.Db.QueryContext(ctx, query, "%"+name+"%")
 	if err != nil {
 		return nil, err
 	}
 	for rows.Next() {
-		var eduInst EducationInstitution
+		var company companyDomain.Company
 		err = rows.Scan(
-			&eduInst.Id,
-			&eduInst.FullName,
-			&eduInst.ShortName,
-			&eduInst.Description,
+			&company.Id,
+			&company.FullName,
+			&company.ShortName,
+			&company.Description,
 		)
 		if err != nil {
 			return nil, err
 		}
 
-		eduList = append(eduList, eduInst)
+		companies = append(companies, company)
 	}
-	return &eduList, nil
+	return &companies, nil
 }

@@ -1,6 +1,6 @@
 package education_institution
 
-type CreateEducationInstitutionDTO struct {
+type CreateEducationInstitutionInputDTO struct {
 	FullName    string `json:"fullName"`
 	ShortName   string `json:"shortName"`
 	Description string `json:"description"`

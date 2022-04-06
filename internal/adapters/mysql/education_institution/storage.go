@@ -21,7 +21,7 @@ func NewEducationInstitutionStorage(mysql *mysqlClient.MySQLClient) *Storage {
 	}
 }
 
-func (s *Storage) Create(ctx context.Context, dto eduInstitutionDomain.CreateEducationInstitutionDTO) (id int64, err error) {
+func (s *Storage) Create(ctx context.Context, dto eduInstitutionDomain.CreateEducationInstitutionInputDTO) (id int64, err error) {
 	query := fmt.Sprintf("INSERT INTO %s (fullName,shortName,description) VALUES(?,?,?)", tableName)
 
 	res, err := s.client.Db.ExecContext(

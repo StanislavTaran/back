@@ -17,14 +17,14 @@ const logLocation = "USER COMPANY CONTROLLER:"
 // @Tags User Company
 // @Accept       json
 // @Produce      json
-// @Param        userData  body      user_company.CreateUserJobExperienceDTO  true  "User job data"
+// @Param        userData  body      user_company.CreateUserJobExperienceInputDTO  true  "User job data"
 // @Success 200 {object} object{id=number}
 // @Failure 400 {object} httpResponse.ResponseError
 // @Failure 401
 // @Router /userCompany [post]
 func (h *Handler) createUserJobExperience() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		var dto user_company.CreateUserJobExperienceDTO
+		var dto user_company.CreateUserJobExperienceInputDTO
 		body, err := ioutil.ReadAll(ctx.Request.Body)
 		if err != nil {
 			httpResponse.ErrorByType(ctx, err)

@@ -17,13 +17,13 @@ const logLocation = "AUTH CONTROLLER:"
 // @Tags Auth
 // @Accept       json
 // @Produce      json
-// @Param        credentials  body      authDTO.Credentials  true  "Sign In"
+// @Param        credentials  body      authDTO.CredentialsInputDTO  true  "Sign In"
 // @Success 200 {object} jwtpackage.TokenInfo
 // @Failure 400 {object} httpResponse.ResponseError
 // @Router /auth/signIn [post]
 func (h *Handler) signIn() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		var creds authDTO.Credentials
+		var creds authDTO.CredentialsInputDTO
 
 		body, err := ioutil.ReadAll(ctx.Request.Body)
 		if err != nil {

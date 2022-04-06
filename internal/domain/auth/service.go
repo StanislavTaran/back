@@ -20,7 +20,7 @@ func NewAuthService(storage *user2.Storage, helper jwtpackage.Helper) *Service {
 	}
 }
 
-func (as *Service) SignIn(ctx context.Context, user user.User, credentials Credentials) (tokenInfo *jwtpackage.TokenInfo, err error) {
+func (as *Service) SignIn(ctx context.Context, user user.User, credentials CredentialsInputDTO) (tokenInfo *jwtpackage.TokenInfo, err error) {
 	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(credentials.Password))
 	if err != nil {
 		return nil, err

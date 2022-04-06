@@ -1,7 +1,6 @@
 package education_institution
 
 import (
-	"back/internal/adapters/mysql/education_institution"
 	"context"
 )
 
@@ -9,7 +8,7 @@ type EducationInstitutionService struct {
 	educationInstitutionStorage educationInstitutionStorage
 }
 
-func NewEducationInstitutionService(educationInstitutionStorage *education_institution.Storage) *EducationInstitutionService {
+func NewEducationInstitutionService(educationInstitutionStorage educationInstitutionStorage) *EducationInstitutionService {
 	return &EducationInstitutionService{
 		educationInstitutionStorage: educationInstitutionStorage,
 	}

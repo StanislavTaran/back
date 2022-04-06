@@ -21,7 +21,7 @@ func NewCompanyStorage(mysql *mysqlClient.MySQLClient) *Storage {
 	}
 }
 
-func (s *Storage) Create(ctx context.Context, dto companyDomain.CreateCompanyDTO) (id int64, err error) {
+func (s *Storage) Create(ctx context.Context, dto companyDomain.CreateCompanyInputDTO) (id int64, err error) {
 	query := fmt.Sprintf("INSERT INTO %s (fullName,shortName,description) VALUES(?,?,?)", tableName)
 
 	res, err := s.client.Db.ExecContext(

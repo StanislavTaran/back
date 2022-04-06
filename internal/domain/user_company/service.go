@@ -18,12 +18,12 @@ func NewUserCompanyService(userCompanyStorage userCompanyStorage, companyStorage
 	}
 }
 
-func (u *UserCompanyService) Create(ctx context.Context, dto CreateUserJobExperienceDTO) (int64, error) {
+func (u *UserCompanyService) Create(ctx context.Context, dto CreateUserJobExperienceInputDTO) (int64, error) {
 	if dto.CompanyId == 0 {
 		if dto.CompanyName == "" {
 			return 0, errors.New("company not provided")
 		}
-		var companyDto = companyDomain.CreateCompanyDTO{
+		var companyDto = companyDomain.CreateCompanyInputDTO{
 			FullName:    dto.CompanyName,
 			ShortName:   "",
 			Description: "",

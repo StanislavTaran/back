@@ -45,7 +45,7 @@ func (h *Handler) getUserById() gin.HandlerFunc {
 // @Tags User
 // @Produce      json
 // @Param        id   path      string  true  "user id"
-// @Success 200 {object} userDomain.FullUserInfoDTO
+// @Success 200 {object} userDomain.FullUserInfoOutputDTO
 // @Failure 400 {object} httpResponse.ResponseError
 // @Failure 401
 // @Router /users/:id/profile [get]
@@ -69,13 +69,13 @@ func (h *Handler) getUserFullInfoById() gin.HandlerFunc {
 // @Tags User
 // @Accept       json
 // @Produce      json
-// @Param        userData  body      userDomain.CreateUserDTO  true  "User data"
+// @Param        userData  body      userDomain.CreateUserInputDTO  true  "User data"
 // @Success 200 {object} object{id=string}
 // @Failure 400 {object} httpResponse.ResponseError
 // @Router /users [post]
 func (h *Handler) createUser() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		var dto userDomain.CreateUserDTO
+		var dto userDomain.CreateUserInputDTO
 		body, err := ioutil.ReadAll(ctx.Request.Body)
 		if err != nil {
 			httpResponse.ErrorByType(ctx, err)

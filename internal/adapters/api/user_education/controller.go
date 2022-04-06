@@ -17,14 +17,14 @@ const logLocation = "USER EDUCATION CONTROLLER:"
 // @Tags User Education
 // @Accept       json
 // @Produce      json
-// @Param        userData  body      user_education.CreateUserEducationDTO  true  "User education data"
+// @Param        userData  body      user_education.CreateUserEducationInputDTO  true  "User education data"
 // @Success 200 {object} object{id=number}
 // @Failure 400 {object} httpResponse.ResponseError
 // @Failure 401
 // @Router /userEducation [post]
 func (h *Handler) createUserEducationExperience() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		var dto user_education.CreateUserEducationDTO
+		var dto user_education.CreateUserEducationInputDTO
 		body, err := ioutil.ReadAll(ctx.Request.Body)
 		if err != nil {
 			httpResponse.ErrorByType(ctx, err)

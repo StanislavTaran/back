@@ -21,7 +21,7 @@ func NewUserEducationStorage(mysql *mysqlClient.MySQLClient) *Storage {
 	}
 }
 
-func (s *Storage) Create(ctx context.Context, dto userEducationDomain.CreateUserEducationDTO) (int64, error) {
+func (s *Storage) Create(ctx context.Context, dto userEducationDomain.CreateUserEducationInputDTO) (int64, error) {
 	var query = fmt.Sprintf("INSERT INTO %s (userId,eduInstitutionId,faculty,inProgress,startDate,endDate) VALUES(?,?,?,?,?,?)", tableName)
 
 	res, err := s.client.Db.ExecContext(

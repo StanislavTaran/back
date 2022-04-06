@@ -42,7 +42,7 @@ func (s *Storage) FindById(ctx context.Context, id string) (*userDomain.User, er
 	return &user, nil
 }
 
-func (s *Storage) CollectUserInfoById(ctx context.Context, id string) (*userDomain.FullUserInfoDTO, error) {
+func (s *Storage) CollectUserInfoById(ctx context.Context, id string) (*userDomain.FullUserInfoOutputDTO, error) {
 	query := `SELECT 
        u.id, 
        u.firstName, 
@@ -80,7 +80,7 @@ FROM users u
     LEFT JOIN employment_type empt ON (uc.employmentTypeId = empt.id) 
 WHERE u.id = ?`
 
-	var user userDomain.FullUserInfoDTO
+	var user userDomain.FullUserInfoOutputDTO
 
 	rows, err := s.client.Db.QueryContext(ctx, query, id)
 	if err != nil {
@@ -88,8 +88,8 @@ WHERE u.id = ?`
 	}
 
 	for rows.Next() {
-		var eduInstitution userDomain.EduInstitution
-		var company userDomain.Company
+		var eduInstitution userDomain.EduInstitutionOutput
+		var company userDomain.CompanyOutput
 		var userJob userDomain.JobUserInfo
 		var userEdu userDomain.EducationUserInfo
 
@@ -166,7 +166,7 @@ func (s *Storage) GetUserByEmail(ctx context.Context, email string) (*userDomain
 	return &user, nil
 }
 
-func (s *Storage) Create(ctx context.Context, dto userDomain.CreateUserDTO) (string, error) {
+func (s *Storage) Create(ctx context.Context, dto userDomain.CreateUserInputDTO) (string, error) {
 	var id = uuid.New().String()
 	query := fmt.Sprintf(
 		"INSERT INTO %s (id, firstName, lastName, email, password, roleId) VALUES (?,?,?,?,?,?)", tableName,

@@ -18,12 +18,12 @@ func NewUserEducationService(userEducationStorage userEducationStorage, eduInsti
 	}
 }
 
-func (u *UserEducationService) Create(ctx context.Context, dto CreateUserEducationDTO) (int64, error) {
+func (u *UserEducationService) Create(ctx context.Context, dto CreateUserEducationInputDTO) (int64, error) {
 	if dto.EduInstitutionId == 0 {
 		if dto.EduInstitutionName == "" {
 			return 0, errors.New("edu_institution institution not provided")
 		}
-		var eduInstitutionDto education_institution.CreateEducationInstitutionDTO = education_institution.CreateEducationInstitutionDTO{
+		var eduInstitutionDto education_institution.CreateEducationInstitutionInputDTO = education_institution.CreateEducationInstitutionInputDTO{
 			FullName:    dto.EduInstitutionName,
 			ShortName:   "",
 			Description: "",

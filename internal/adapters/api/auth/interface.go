@@ -8,7 +8,7 @@ import (
 )
 
 type authService interface {
-	SignIn(ctx context.Context, user user.User, creds auth.Credentials) (tokenInfo *jwtpackage.TokenInfo, err error)
+	SignIn(ctx context.Context, user user.User, creds auth.CredentialsInputDTO) (tokenInfo *jwtpackage.TokenInfo, err error)
 	LogOut(ctx context.Context, rt jwtpackage.RT) (err error)
 	RefreshToken(ctx context.Context, rt jwtpackage.RT) (tokenInfo *jwtpackage.TokenInfo, err error)
 	FindUserByEmail(ctx context.Context, email string) (user *user.User, err error)
